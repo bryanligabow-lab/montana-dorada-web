@@ -699,10 +699,16 @@
 
   .home-bg {
     position: absolute; inset: 0;
-    background: url('https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80') center/cover no-repeat;
-    transform: scale(1.06); transition: transform 9s ease;
+    overflow: hidden;
   }
-  #md-home.visible .home-bg { transform: scale(1); }
+  .home-bg video {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%; min-height: 100%;
+    width: auto; height: auto;
+    object-fit: cover;
+  }
 
   .home-overlay {
     position: absolute; inset: 0;
@@ -1041,6 +1047,547 @@
     pointer-events:none; z-index:999;
     animation:pvFloatUp 1.6s ease forwards;
   }
+
+  /* ── Progress bar nivel ── */
+  .pv-progress-wrap { margin:16px 0 6px; }
+  .pv-progress-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--soft); margin-bottom:6px; letter-spacing:1px; text-transform:uppercase; }
+  .pv-progress-track { background:rgba(255,255,255,0.07); border-radius:99px; height:6px; overflow:hidden; }
+  .pv-progress-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#C5A55A,#F0D080); transition:width 0.8s ease; }
+
+  /* ── Leaderboard ── */
+  #pv-leaderboard { overflow-y:auto; max-height:calc(100vh - 120px); padding-bottom:16px; }
+  .pvl-title { font-family:'Cinzel',serif; font-size:18px; letter-spacing:3px; color:var(--gold); text-align:center; margin-bottom:20px; }
+  .pvl-podium { display:flex; align-items:flex-end; justify-content:center; gap:10px; margin-bottom:24px; }
+  .pvl-pod { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .pvl-pod-avatar { border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cinzel',serif; font-weight:700; color:#1a1a1a; }
+  .pvl-pod.first  .pvl-pod-avatar { width:68px; height:68px; font-size:20px; background:linear-gradient(135deg,#FFD700,#FFA500); box-shadow:0 0 20px rgba(255,215,0,0.4); }
+  .pvl-pod.second .pvl-pod-avatar { width:54px; height:54px; font-size:16px; background:linear-gradient(135deg,#C0C0C0,#909090); box-shadow:0 0 12px rgba(192,192,192,0.3); }
+  .pvl-pod.third  .pvl-pod-avatar { width:48px; height:48px; font-size:14px; background:linear-gradient(135deg,#CD7F32,#8B4513); box-shadow:0 0 10px rgba(205,127,50,0.3); }
+  .pvl-pod-name { font-size:11px; color:var(--white); text-align:center; max-width:70px; line-height:1.3; }
+  .pvl-pod-pts { font-family:'Cinzel',serif; font-size:12px; color:var(--gold); font-weight:700; }
+  .pvl-pod-bar { border-radius:6px 6px 0 0; width:56px; }
+  .pvl-pod.first  .pvl-pod-bar { height:60px; background:linear-gradient(180deg,rgba(255,215,0,0.3),rgba(255,215,0,0.05)); border-top:2px solid #FFD700; }
+  .pvl-pod.second .pvl-pod-bar { height:42px; background:linear-gradient(180deg,rgba(192,192,192,0.2),rgba(192,192,192,0.02)); border-top:2px solid #C0C0C0; }
+  .pvl-pod.third  .pvl-pod-bar { height:30px; background:linear-gradient(180deg,rgba(205,127,50,0.2),rgba(205,127,50,0.02)); border-top:2px solid #CD7F32; }
+  .pvl-pos-num { font-family:'Cinzel',serif; font-size:26px; font-weight:700; line-height:1; }
+  .pvl-pod.first  .pvl-pos-num { color:#FFD700; }
+  .pvl-pod.second .pvl-pos-num { color:#C0C0C0; }
+  .pvl-pod.third  .pvl-pos-num { color:#CD7F32; }
+  .pvl-list { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .pvl-row { display:flex; align-items:center; gap:12px; padding:10px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:10px; }
+  .pvl-row.me { background:rgba(197,165,90,0.08); border-color:rgba(197,165,90,0.3); }
+  .pvl-row-pos { font-family:'Cinzel',serif; font-size:14px; color:var(--soft); width:22px; text-align:center; flex-shrink:0; }
+  .pvl-row-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#2a2a2a,#1a1a1a); border:1px solid rgba(197,165,90,0.2); display:flex; align-items:center; justify-content:center; font-family:'Cinzel',serif; font-size:13px; color:var(--gold); font-weight:700; flex-shrink:0; }
+  .pvl-row-name { flex:1; font-size:13px; color:var(--white); }
+  .pvl-row-pts { font-family:'Cinzel',serif; font-size:13px; color:var(--gold); font-weight:700; }
+  .pvl-row-nivel { font-size:9px; letter-spacing:1px; padding:2px 6px; border-radius:4px; flex-shrink:0; }
+  .pvl-row-nivel.bronce { color:#CD853F; border:1px solid #CD853F; }
+  .pvl-row-nivel.plata  { color:#C0C0C0; border:1px solid #C0C0C0; }
+  .pvl-row-nivel.oro    { color:var(--gold); border:1px solid var(--gold); }
+  .pvl-empty { text-align:center; color:var(--soft); font-size:13px; padding:20px; }
+  .pvl-spinner-wrap { text-align:center; color:var(--soft); font-size:13px; padding:20px; display:flex; align-items:center; justify-content:center; gap:8px; }
+
+  /* ═══════════════ DASHBOARD V2 ═══════════════ */
+  .dv2-header {
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:18px;
+  }
+  .dv2-avatar {
+    width:54px; height:54px; border-radius:50%;
+    background:linear-gradient(135deg,#C5A55A,#8B6914);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cinzel',serif; font-size:22px; font-weight:700;
+    color:#1a0f00; box-shadow:0 0 18px rgba(197,165,90,0.35);
+    flex-shrink:0; border:2px solid rgba(255,215,0,0.3);
+  }
+  .dv2-user-info { flex:1; min-width:0; }
+  .dv2-user-name {
+    font-family:'Cinzel',serif; font-size:15px; color:var(--white);
+    font-weight:600; letter-spacing:0.5px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    margin-bottom:2px;
+  }
+  .dv2-user-role {
+    font-size:10px; color:var(--soft);
+    letter-spacing:1.5px; text-transform:uppercase;
+  }
+  .dv2-coins-pill {
+    display:inline-flex; align-items:center; gap:6px;
+    background:linear-gradient(135deg,rgba(197,165,90,0.22),rgba(197,165,90,0.08));
+    border:1px solid rgba(197,165,90,0.45);
+    padding:7px 13px; border-radius:30px;
+    font-family:'Cinzel',serif; font-size:13px;
+    color:var(--gold); font-weight:700;
+    flex-shrink:0; letter-spacing:0.5px;
+  }
+  .dv2-coins-pill::before { content:'★'; font-size:13px; }
+
+  /* Level card */
+  .dv2-level-card {
+    position:relative;
+    background:linear-gradient(135deg,#1a0f00 0%,#2d1a04 100%);
+    border:1px solid rgba(197,165,90,0.25);
+    border-radius:16px; padding:20px 22px;
+    margin-bottom:12px; overflow:hidden;
+    transition:border-color 0.4s, box-shadow 0.4s;
+  }
+  .dv2-level-card.plata  { border-color:rgba(192,192,192,0.4); box-shadow:0 0 22px rgba(192,192,192,0.06); }
+  .dv2-level-card.oro    { border-color:rgba(255,215,0,0.5); box-shadow:0 0 26px rgba(255,215,0,0.1); }
+  .dv2-level-card::before {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:170px; height:170px;
+    background:radial-gradient(circle,rgba(197,165,90,0.18),transparent 70%);
+    pointer-events:none;
+  }
+  .dv2-level-card.plata::before { background:radial-gradient(circle,rgba(192,192,192,0.18),transparent 70%); }
+  .dv2-level-card.oro::before   { background:radial-gradient(circle,rgba(255,215,0,0.22),transparent 70%); }
+  .dv2-level-name {
+    font-family:'Cinzel',serif; font-size:10px; color:var(--soft);
+    letter-spacing:2.5px; text-transform:uppercase; margin-bottom:6px;
+    position:relative; z-index:2;
+  }
+  .dv2-level-value {
+    font-family:'Cinzel',serif; font-size:28px; color:var(--gold);
+    font-weight:700; margin-bottom:16px; letter-spacing:2px;
+    position:relative; z-index:2;
+  }
+  .dv2-level-card.plata .dv2-level-value { color:#D4D4D4; }
+  .dv2-level-card.oro   .dv2-level-value { color:#FFD700; }
+  .dv2-medal {
+    position:absolute; top:50%; right:14px;
+    transform:translateY(-50%);
+    font-size:54px; line-height:1;
+    filter:drop-shadow(0 6px 14px rgba(0,0,0,0.6));
+    z-index:1; pointer-events:none;
+  }
+  .dv2-progress-line {
+    height:8px; background:rgba(255,255,255,0.08);
+    border-radius:99px; overflow:hidden; margin-bottom:8px;
+    position:relative; z-index:2;
+  }
+  .dv2-progress-line-fill {
+    height:100%; background:linear-gradient(90deg,#C5A55A,#F0D080);
+    border-radius:99px; transition:width 0.8s ease;
+    box-shadow:0 0 10px rgba(197,165,90,0.5);
+  }
+  .dv2-level-card.plata .dv2-progress-line-fill { background:linear-gradient(90deg,#A0A0A0,#E0E0E0); }
+  .dv2-level-card.oro   .dv2-progress-line-fill { background:linear-gradient(90deg,#FFD700,#FFF4B0); }
+  .dv2-progress-meta {
+    display:flex; justify-content:space-between;
+    font-size:10px; color:var(--soft); letter-spacing:1px;
+    text-transform:uppercase; position:relative; z-index:2;
+  }
+
+  /* Stat cards grid */
+  .dv2-stats {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:10px; margin-bottom:14px;
+  }
+  .dv2-stat {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(197,165,90,0.12);
+    border-radius:12px; padding:14px 14px 12px;
+    position:relative; overflow:hidden;
+  }
+  .dv2-stat-label {
+    font-size:9px; color:var(--soft);
+    letter-spacing:1.5px; text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .dv2-stat-value {
+    font-family:'Cinzel',serif; font-size:22px;
+    color:var(--gold); font-weight:700; line-height:1.1;
+  }
+  .dv2-stat-icon {
+    position:absolute; top:10px; right:12px;
+    font-size:14px; opacity:0.5;
+  }
+
+  /* Action buttons */
+  .dv2-actions { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+  .dv2-action {
+    width:100%; display:flex; align-items:center; gap:12px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(197,165,90,0.15);
+    border-radius:12px; padding:13px 14px;
+    color:var(--white); font-family:'DM Sans',sans-serif;
+    font-size:13px; font-weight:500;
+    cursor:pointer; transition:all 0.2s; text-align:left;
+  }
+  .dv2-action:hover { border-color:var(--gold); background:rgba(197,165,90,0.07); }
+  .dv2-action.primary {
+    background:linear-gradient(135deg,#3d2a0c,#1a0f00);
+    border-color:var(--gold); color:var(--gold);
+    font-family:'Cinzel',serif; font-weight:600; letter-spacing:1.5px;
+    font-size:12px; text-transform:uppercase;
+    justify-content:flex-start;
+    padding:15px 16px;
+  }
+  .dv2-action.primary:hover { box-shadow:0 0 20px rgba(197,165,90,0.25); }
+  .dv2-action:disabled { opacity:0.45; cursor:default; }
+  .dv2-action:disabled:hover { border-color:rgba(197,165,90,0.15); background:rgba(255,255,255,0.04); box-shadow:none; }
+  .dv2-action-icon {
+    width:32px; height:32px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(197,165,90,0.12); border-radius:8px;
+    font-size:15px; color:var(--gold);
+  }
+  .dv2-action.primary .dv2-action-icon { background:rgba(197,165,90,0.18); font-size:16px; }
+  .dv2-action-text { flex:1; }
+  .dv2-action-arrow { color:var(--soft); font-size:14px; }
+  .dv2-action.danger { color:rgba(231,76,60,0.85); }
+  .dv2-action.danger .dv2-action-icon { color:#e74c3c; background:rgba(231,76,60,0.1); }
+  .dv2-action.danger:hover { border-color:rgba(231,76,60,0.4); background:rgba(231,76,60,0.05); color:#e74c3c; }
+
+  .dv2-cooldown {
+    background:rgba(197,165,90,0.06);
+    border:1px solid rgba(197,165,90,0.18);
+    border-radius:12px; padding:12px 14px;
+    font-size:11px; color:var(--gold);
+    text-align:center; line-height:1.6;
+    margin-bottom:10px;
+  }
+
+  /* ═══════════════ HOME USER CHIP ═══════════════ */
+  .home-user-chip {
+    position:absolute; top:14px; right:14px; z-index:30;
+    display:flex; align-items:center; gap:10px;
+    background:linear-gradient(135deg, rgba(26,15,0,0.92), rgba(45,26,4,0.85));
+    border:1px solid rgba(197,165,90,0.4);
+    border-radius:30px; padding:5px 14px 5px 5px;
+    cursor:pointer; backdrop-filter:blur(10px);
+    box-shadow:0 4px 16px rgba(0,0,0,0.4), 0 0 18px rgba(197,165,90,0.2);
+    transition:transform 0.2s, box-shadow 0.2s, border-color 0.4s;
+    max-width:230px; font-family:'DM Sans',sans-serif;
+  }
+  .home-user-chip:hover {
+    transform:translateY(-1px);
+    box-shadow:0 6px 22px rgba(0,0,0,0.45), 0 0 26px rgba(197,165,90,0.32);
+  }
+  .home-user-chip.plata { border-color:rgba(192,192,192,0.45); }
+  .home-user-chip.oro   { border-color:rgba(255,215,0,0.55); box-shadow:0 4px 16px rgba(0,0,0,0.4), 0 0 22px rgba(255,215,0,0.25); }
+  .huc-avatar {
+    width:38px; height:38px; border-radius:50%;
+    background:linear-gradient(135deg,#C5A55A,#8B6914);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cinzel',serif; font-size:15px; font-weight:700;
+    color:#1a0f00; border:2px solid rgba(255,215,0,0.4);
+    flex-shrink:0;
+  }
+  .home-user-chip.plata .huc-avatar { background:linear-gradient(135deg,#D4D4D4,#7A7A7A); border-color:rgba(255,255,255,0.4); }
+  .home-user-chip.oro   .huc-avatar { background:linear-gradient(135deg,#FFD700,#B8860B); border-color:rgba(255,215,0,0.6); }
+  .huc-info { display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .huc-name {
+    font-family:'Cinzel',serif; font-size:11px; color:#fff;
+    font-weight:600; letter-spacing:0.5px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width:140px; line-height:1.1;
+  }
+  .huc-prog { display:flex; align-items:center; gap:6px; }
+  .huc-prog-bar {
+    width:74px; height:4px;
+    background:rgba(255,255,255,0.12);
+    border-radius:99px; overflow:hidden;
+  }
+  .huc-prog-fill {
+    height:100%; border-radius:99px;
+    background:linear-gradient(90deg,#C5A55A,#F0D080);
+    transition:width 0.6s ease;
+    box-shadow:0 0 6px rgba(197,165,90,0.5);
+  }
+  .home-user-chip.plata .huc-prog-fill { background:linear-gradient(90deg,#A0A0A0,#E8E8E8); box-shadow:0 0 6px rgba(192,192,192,0.5); }
+  .home-user-chip.oro   .huc-prog-fill { background:linear-gradient(90deg,#FFD700,#FFF4B0); box-shadow:0 0 6px rgba(255,215,0,0.6); }
+  .huc-prog-label {
+    font-family:'Cinzel',serif; font-size:9px;
+    color:var(--gold); font-weight:700; letter-spacing:0.5px;
+  }
+  @media (max-width:380px) {
+    .home-user-chip { padding:4px 12px 4px 4px; max-width:200px; }
+    .huc-avatar { width:34px; height:34px; font-size:14px; }
+    .huc-prog-bar { width:60px; }
+    .huc-name { max-width:120px; }
+  }
+
+  /* ═══════════════ MATE AI CREDIT ═══════════════ */
+  .mate-credit {
+    position:relative; z-index:5;
+    text-align:center; font-size:9px;
+    color:rgba(255,255,255,0.35);
+    letter-spacing:1.5px; text-transform:uppercase;
+    margin-top:18px; font-family:'DM Sans',sans-serif;
+  }
+  .mate-credit a {
+    color:rgba(197,165,90,0.55); text-decoration:none;
+    transition:color 0.2s;
+  }
+  .mate-credit a:hover { color:var(--gold); }
+  .mate-credit .mate-dot { color:rgba(255,255,255,0.2); margin:0 6px; }
+
+  /* ═══════════════ JUEGOS OVERLAY ═══════════════ */
+  #mg-overlay {
+    display:none; position:fixed; inset:0; z-index:300;
+    background:rgba(0,0,0,0.96); overflow-y:auto;
+    font-family:'DM Sans',sans-serif;
+  }
+  #mg-overlay.open { display:block; }
+  .mg-header {
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 12px;
+    background:rgba(10,10,10,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(197,165,90,0.15);
+  }
+  .mg-title {
+    flex:1; text-align:center;
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:3px;
+    color:var(--gold);
+  }
+  .mg-back, .mg-close {
+    background:transparent; border:none; color:var(--gold);
+    font-size:22px; cursor:pointer; padding:4px 10px;
+    width:44px;
+  }
+  .mg-body { max-width:480px; margin:0 auto; padding:18px 16px 32px; }
+  .mg-view { display:none; }
+  .mg-view.active { display:block; }
+
+  /* Hub */
+  .mg-hub-intro { font-size:13px; color:var(--soft); text-align:center; margin-bottom:18px; line-height:1.5; }
+  .mg-cards { display:flex; flex-direction:column; gap:12px; }
+  .mg-card {
+    width:100%; display:flex; align-items:center; gap:14px;
+    padding:18px 16px; border-radius:14px; cursor:pointer;
+    background:linear-gradient(135deg,#1a0f00,#2d1a04);
+    border:1px solid rgba(197,165,90,0.22);
+    text-align:left; transition:all 0.2s;
+    font-family:'DM Sans',sans-serif;
+  }
+  .mg-card:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 6px 20px rgba(197,165,90,0.18); }
+  .mg-card-prize { border-color:rgba(255,215,0,0.35); }
+  .mg-card-prize:hover { border-color:#FFD700; box-shadow:0 6px 22px rgba(255,215,0,0.22); }
+  .mg-card-icon {
+    width:54px; height:54px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(197,165,90,0.12);
+    border:1px solid rgba(197,165,90,0.25);
+    border-radius:14px; font-size:28px;
+  }
+  .mg-card-prize .mg-card-icon { background:linear-gradient(135deg,rgba(255,215,0,0.18),rgba(231,76,60,0.12)); border-color:rgba(255,215,0,0.45); }
+  .mg-card-body { flex:1; min-width:0; }
+  .mg-card-tag {
+    font-size:9px; letter-spacing:2px; color:var(--gold);
+    font-weight:700; margin-bottom:4px;
+  }
+  .mg-card-prize .mg-card-tag { color:#FFD700; }
+  .mg-card-name {
+    font-family:'Cinzel',serif; font-size:15px; color:var(--white);
+    font-weight:600; margin-bottom:4px;
+  }
+  .mg-card-desc { font-size:12px; color:var(--soft); line-height:1.4; }
+  .mg-card-arrow { font-size:22px; color:var(--gold); flex-shrink:0; }
+  .mg-hub-foot { text-align:center; font-size:11px; color:var(--soft); margin-top:18px; opacity:0.6; }
+
+  /* Botones juegos */
+  .mg-btn {
+    width:100%; background:linear-gradient(135deg,#3d2a0c,#1a0f00);
+    border:1px solid var(--gold); border-radius:8px;
+    color:var(--gold); font-family:'Cinzel',serif;
+    font-size:13px; font-weight:600; letter-spacing:2px;
+    padding:14px; cursor:pointer; transition:all 0.2s;
+    text-transform:uppercase;
+  }
+  .mg-btn:hover { box-shadow:0 0 20px rgba(197,165,90,0.28); }
+  .mg-btn:disabled { opacity:0.5; cursor:default; }
+  .mg-btn-sec {
+    width:100%; background:transparent;
+    border:1px solid rgba(197,165,90,0.22); border-radius:8px;
+    color:var(--soft); font-family:'Cinzel',serif;
+    font-size:11px; letter-spacing:1.5px; padding:11px;
+    cursor:pointer; transition:all 0.2s; margin-top:14px;
+  }
+  .mg-btn-sec:hover { color:var(--gold); border-color:rgba(197,165,90,0.5); }
+
+  /* Memoria */
+  .mg-mem-stats {
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:8px; margin-bottom:16px;
+  }
+  .mg-mem-stat {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(197,165,90,0.15);
+    border-radius:10px; padding:10px 8px; text-align:center;
+  }
+  .mg-mem-stat span { display:block; font-size:9px; color:var(--soft); letter-spacing:1.5px; margin-bottom:3px; }
+  .mg-mem-stat b { font-family:'Cinzel',serif; font-size:18px; color:var(--gold); font-weight:700; }
+  .mg-mem-grid {
+    display:grid; grid-template-columns:repeat(4, 1fr);
+    gap:8px; margin-bottom:14px; max-width:380px;
+    margin-left:auto; margin-right:auto;
+  }
+  .mg-mem-card {
+    aspect-ratio:1; position:relative;
+    background:transparent; border:none; padding:0;
+    cursor:pointer; perspective:600px;
+  }
+  .mg-mem-card .mg-mem-back,
+  .mg-mem-card .mg-mem-front {
+    position:absolute; inset:0;
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:30px; backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    transition:transform 0.4s;
+  }
+  .mg-mem-card .mg-mem-back {
+    background:linear-gradient(135deg,#3d2a0c,#1a0f00);
+    border:1px solid var(--gold); color:var(--gold);
+    font-family:'Cinzel',serif; font-size:24px;
+  }
+  .mg-mem-card .mg-mem-front {
+    background:linear-gradient(135deg,#1a0f00,#2d1a04);
+    border:1px solid rgba(197,165,90,0.3);
+    transform:rotateY(180deg);
+  }
+  .mg-mem-card.flipped .mg-mem-back { transform:rotateY(180deg); }
+  .mg-mem-card.flipped .mg-mem-front { transform:rotateY(0); }
+  .mg-mem-card.matched .mg-mem-front {
+    border-color:#2ecc71; box-shadow:0 0 16px rgba(46,204,113,0.3);
+  }
+  .mg-mem-win {
+    text-align:center; padding:30px 16px;
+    background:linear-gradient(135deg,#1a0f00,#2d1a04);
+    border:1px solid var(--gold); border-radius:14px;
+    box-shadow:0 0 30px rgba(197,165,90,0.22);
+  }
+  .mg-mem-win-emoji { font-size:64px; margin-bottom:8px; }
+  .mg-mem-win-title { font-family:'Cinzel',serif; font-size:22px; color:var(--gold); letter-spacing:3px; margin-bottom:6px; }
+  .mg-mem-win-stats { font-size:13px; color:var(--soft); margin-bottom:20px; }
+
+  /* Ruleta */
+  .mg-rul-intro { text-align:center; margin-bottom:14px; }
+  .mg-rul-tagline { font-family:'Cinzel',serif; font-size:18px; color:var(--gold); letter-spacing:2px; margin-bottom:6px; }
+  .mg-rul-sub { font-size:12px; color:var(--soft); line-height:1.5; }
+  .mg-rul-wheel-wrap {
+    position:relative; width:300px; height:320px;
+    margin:0 auto 14px; padding-top:24px;
+  }
+  .mg-rul-pointer {
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    font-size:28px; color:var(--gold); z-index:3;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,0.7));
+    line-height:1;
+  }
+  .mg-rul-wheel {
+    width:280px; height:280px; border-radius:50%;
+    margin:0 auto;
+    border:4px solid #C5A55A;
+    box-shadow:0 0 30px rgba(197,165,90,0.35),
+               inset 0 0 0 6px #1a0f00,
+               inset 0 0 0 8px rgba(197,165,90,0.45);
+    transition:transform 5s cubic-bezier(0.17, 0.67, 0.16, 0.99);
+    transform:rotate(0deg);
+    position:relative;
+    background:#1a1a1a;
+  }
+  .mg-rul-center {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%, calc(-50% + 12px));
+    width:60px; height:60px; border-radius:50%;
+    background:linear-gradient(135deg,#3d2a0c,#1a0f00);
+    border:3px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 20px rgba(197,165,90,0.5);
+    z-index:2;
+  }
+  .mg-rul-center-icon { font-size:24px; }
+  .mg-rul-legend {
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    margin-bottom:14px; font-size:11px; color:var(--soft);
+  }
+  .mg-rul-legend-item { display:flex; align-items:center; gap:8px; }
+  .mg-leg-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; box-shadow:0 0 6px currentColor; }
+  .mg-rul-spin { font-size:14px; padding:16px; }
+
+  /* Modal resultado ruleta */
+  #mg-rul-modal {
+    display:none; position:fixed; inset:0; z-index:400;
+    background:rgba(0,0,0,0.93); padding:30px 16px;
+    align-items:center; justify-content:center;
+  }
+  #mg-rul-modal.open { display:flex; }
+  .mg-rul-modal-card {
+    max-width:380px; width:100%;
+    background:linear-gradient(135deg,#1a0f00,#2d1a04);
+    border:2px solid var(--gold); border-radius:18px;
+    padding:24px 20px; text-align:center;
+    box-shadow:0 0 40px rgba(197,165,90,0.32);
+    animation:mgPop 0.4s ease;
+  }
+  @keyframes mgPop {
+    from { opacity:0; transform:scale(0.85); }
+    to   { opacity:1; transform:scale(1); }
+  }
+  .mg-rul-modal-tier {
+    font-family:'Cinzel',serif; font-size:11px; letter-spacing:3px;
+    color:var(--gold); margin-bottom:14px;
+  }
+  .mg-rul-modal-emoji { font-size:64px; margin-bottom:10px; line-height:1; }
+  .mg-rul-modal-name {
+    font-family:'Cinzel',serif; font-size:16px; color:var(--white);
+    font-weight:600; margin-bottom:14px; line-height:1.35;
+  }
+  .mg-rul-modal-prize-label {
+    font-size:10px; letter-spacing:2.5px; color:var(--soft); margin-bottom:6px;
+  }
+  .mg-rul-modal-prize {
+    font-family:'Cinzel',serif; font-size:17px; color:var(--gold);
+    font-weight:700; margin-bottom:14px;
+    padding:12px; background:rgba(197,165,90,0.08);
+    border:1px solid rgba(197,165,90,0.32); border-radius:10px;
+  }
+  .mg-rul-modal-instructions {
+    font-size:11px; color:var(--soft); line-height:1.5;
+    margin-bottom:18px; font-style:italic;
+  }
+
+  /* Estados de bloqueo / cooldown de la ruleta */
+  .mg-rul-state { display:none; }
+  .mg-rul-state.active { display:block; }
+  .mg-rul-lock-card {
+    text-align:center; padding:36px 22px;
+    background:linear-gradient(135deg,#1a0f00,#2d1a04);
+    border:1px solid rgba(197,165,90,0.3);
+    border-radius:16px;
+    box-shadow:0 0 30px rgba(197,165,90,0.12);
+    margin-top:20px;
+  }
+  .mg-rul-lock-icon {
+    font-size:64px; margin-bottom:12px; line-height:1;
+    filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  }
+  .mg-rul-lock-title {
+    font-family:'Cinzel',serif; font-size:18px;
+    color:var(--gold); letter-spacing:1.5px;
+    margin-bottom:10px;
+  }
+  .mg-rul-lock-desc {
+    font-size:13px; color:var(--soft); line-height:1.6;
+    margin-bottom:20px;
+  }
+  .mg-rul-cooldown-timer {
+    font-family:'Cinzel',serif; font-size:36px;
+    color:var(--gold); font-weight:700; letter-spacing:3px;
+    padding:14px; margin-bottom:6px;
+    background:rgba(197,165,90,0.06);
+    border:1px solid rgba(197,165,90,0.25);
+    border-radius:10px;
+  }
+  .mg-rul-cooldown-label {
+    font-size:10px; color:var(--soft);
+    letter-spacing:2px; text-transform:uppercase;
+    margin-bottom:18px;
+  }
 </style>
 </head>
 <body>
@@ -1068,8 +1615,25 @@
 
 <!-- ══ HOME SCREEN ══ -->
 <div id="md-home">
-  <div class="home-bg"></div>
+  <div class="home-bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg-video.mp4" type="video/mp4">
+    </video>
+  </div>
   <div class="home-overlay"></div>
+
+  <!-- Chip de usuario logueado (visible solo si hay sesión) -->
+  <div class="home-user-chip" id="home-user-chip" style="display:none;" onclick="window.pvModule && pvModule.openModule()">
+    <div class="huc-avatar" id="huc-avatar">M</div>
+    <div class="huc-info">
+      <div class="huc-name" id="huc-name">—</div>
+      <div class="huc-prog">
+        <div class="huc-prog-bar"><div class="huc-prog-fill" id="huc-prog-fill" style="width:0%"></div></div>
+        <div class="huc-prog-label" id="huc-prog-label">0 pts</div>
+      </div>
+    </div>
+  </div>
+
   <div class="home-content">
 
     <div class="home-logo-wrap">
@@ -1113,12 +1677,27 @@
         <span class="home-btn-arrow">›</span>
       </button>
 
+      <button class="home-btn" onclick="window.mgModule && mgModule.open()">
+        <span class="home-btn-icon">🎮</span>
+        <span class="home-btn-text">
+          <span class="home-btn-title">Juegos</span>
+          <span class="home-btn-desc">Diviértete mientras esperas tu pedido</span>
+        </span>
+        <span class="home-btn-arrow">›</span>
+      </button>
+
     </div>
 
     <div class="home-social">
-      <a href="#" title="Instagram">📸</a>
-      <a href="#" title="Facebook">👍</a>
-      <a href="#" title="WhatsApp">💬</a>
+      <a href="https://www.instagram.com/doradamontana/" target="_blank" rel="noopener" title="Instagram">📸</a>
+      <a href="https://wa.me/593963259963" target="_blank" rel="noopener" title="WhatsApp">💬</a>
+    </div>
+
+    <div class="mate-credit">
+      Hecho por
+      <a href="https://wa.me/593963259963" target="_blank" rel="noopener">Mate Ai</a>
+      <span class="mate-dot">·</span>
+      <a href="https://wa.me/593963259963" target="_blank" rel="noopener">+593 96 325 9963</a>
     </div>
 
   </div>
@@ -1531,19 +2110,73 @@
 
     <!-- Vista 4: Dashboard -->
     <div id="pv-dash" class="pv-view">
-      <div class="pv-wallet">
-        <div class="pv-wallet-name">CLIENTE</div>
-        <div class="pv-wallet-cliente" id="pv-dash-nombre">—</div>
-        <div class="pv-wallet-pts-label">PUNTOS DISPONIBLES</div>
-        <div class="pv-wallet-pts" id="pv-dash-pts">0</div>
-        <div class="pv-wallet-hist" id="pv-dash-hist">0 puntos acumulados en total</div>
-        <span class="pv-nivel-badge bronce" id="pv-dash-nivel">BRONCE</span>
+      <!-- Header: avatar + nombre + pill puntos -->
+      <div class="dv2-header">
+        <div class="dv2-avatar" id="dv2-avatar">M</div>
+        <div class="dv2-user-info">
+          <div class="dv2-user-name" id="pv-dash-nombre">—</div>
+          <div class="dv2-user-role" id="dv2-user-role">Cliente</div>
+        </div>
+        <div class="dv2-coins-pill" id="pv-dash-pts">0</div>
       </div>
-      <div class="pv-card">
-        <button class="pv-btn" id="pv-accum-btn" onclick="pvModule.showView('pv-accum')">★ Acumular puntos de esta visita</button>
-        <div class="pv-info pv-center" id="pv-dash-cooldown" style="display:none;margin-top:12px;"></div>
-        <button class="pv-btn-sec" onclick="pvModule.logout()">Cerrar sesión</button>
+
+      <!-- Tarjeta de nivel -->
+      <div class="dv2-level-card bronce" id="dv2-level-card">
+        <div class="dv2-level-name">Tu Nivel</div>
+        <div class="dv2-level-value" id="pv-dash-nivel">BRONCE</div>
+        <div class="dv2-progress-line">
+          <div class="dv2-progress-line-fill" id="pv-prog-fill" style="width:0%"></div>
+        </div>
+        <div class="dv2-progress-meta">
+          <span id="pv-prog-current-nivel">Bronce</span>
+          <span id="pv-prog-next-label">0 pts para Plata</span>
+        </div>
+        <div class="dv2-medal" id="dv2-medal">🥉</div>
       </div>
+
+      <!-- Estadísticas -->
+      <div class="dv2-stats">
+        <div class="dv2-stat">
+          <span class="dv2-stat-icon">⭐</span>
+          <div class="dv2-stat-label">Puntos actuales</div>
+          <div class="dv2-stat-value" id="dv2-pts-now">0</div>
+        </div>
+        <div class="dv2-stat">
+          <span class="dv2-stat-icon">📊</span>
+          <div class="dv2-stat-label">Total histórico</div>
+          <div class="dv2-stat-value" id="dv2-pts-total">0</div>
+        </div>
+      </div>
+
+      <!-- Aviso cooldown (oculto si lista) -->
+      <div class="dv2-cooldown" id="pv-dash-cooldown" style="display:none;"></div>
+
+      <!-- Botones de acción -->
+      <div class="dv2-actions">
+        <button class="dv2-action primary" id="pv-accum-btn" onclick="pvModule.showView('pv-accum')">
+          <span class="dv2-action-icon">★</span>
+          <span class="dv2-action-text">Acumular puntos de la visita</span>
+        </button>
+        <button class="dv2-action" onclick="pvModule.loadLeaderboard()">
+          <span class="dv2-action-icon">🏆</span>
+          <span class="dv2-action-text">Ver clasificación</span>
+          <span class="dv2-action-arrow">→</span>
+        </button>
+        <button class="dv2-action danger" onclick="pvModule.logout()">
+          <span class="dv2-action-icon">⎋</span>
+          <span class="dv2-action-text">Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Vista 6: Leaderboard -->
+    <div id="pv-leaderboard" class="pv-view">
+      <div class="pvl-title">CLASIFICACIÓN</div>
+      <div id="pvl-podium" class="pvl-podium">
+        <div class="pvl-spinner-wrap"><div class="pv-spinner"></div> Cargando...</div>
+      </div>
+      <div id="pvl-list" class="pvl-list"></div>
+      <button class="pv-btn-sec" onclick="pvModule.showView('pv-dash')">← Volver</button>
     </div>
 
     <!-- Vista 5: OTP / Acumular -->
@@ -1587,7 +2220,7 @@
 
   /* ── CONFIGURACIÓN ────────────────────────────────────────
      Reemplaza con la URL de tu Google Apps Script Web App   */
-  var API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+  var API_URL = 'https://script.google.com/macros/s/AKfycbyW1ore6sr_VS1K4-KWuJ3pS2Z3tZ9W-cq3H_NPPWYGy-5jYECA7RZZBoQTxMLmP5o4nQ/exec';
 
   var pvConfig = null;
   var pvSession = null;
@@ -1737,24 +2370,119 @@
 
   /* ── Dashboard ─────────────────────────────────────────── */
   function updateDash(c) {
-    document.getElementById('pv-dash-nombre').textContent = c.nombre;
+    var nombre = c.nombre || '—';
+    document.getElementById('pv-dash-nombre').textContent = nombre;
     document.getElementById('pv-dash-pts').textContent = c.puntos_actuales || 0;
-    document.getElementById('pv-dash-hist').textContent = (c.puntos_totales_historicos || 0) + ' puntos acumulados en total';
-    var nivel = (c.nivel || 'Bronce').toLowerCase();
+
+    // Avatar con inicial
+    var av = document.getElementById('dv2-avatar');
+    if (av) av.textContent = (nombre.trim()[0] || 'M').toUpperCase();
+
+    // Nivel: badge + tarjeta + medalla
+    var nivelRaw = (c.nivel || 'Bronce');
+    var nivel = nivelRaw.toLowerCase();
     var badge = document.getElementById('pv-dash-nivel');
-    badge.textContent = (c.nivel || 'Bronce').toUpperCase();
-    badge.className = 'pv-nivel-badge ' + nivel;
+    badge.textContent = nivelRaw.toUpperCase();
+    var card = document.getElementById('dv2-level-card');
+    if (card) card.className = 'dv2-level-card ' + nivel;
+    var medal = document.getElementById('dv2-medal');
+    if (medal) medal.textContent = nivel === 'oro' ? '🏆' : (nivel === 'plata' ? '🥈' : '🥉');
+    var role = document.getElementById('dv2-user-role');
+    if (role) role.textContent = 'Cliente ' + nivelRaw;
+
+    // Stats grid
+    var ptsNow = document.getElementById('dv2-pts-now');
+    var ptsTot = document.getElementById('dv2-pts-total');
+    if (ptsNow) ptsNow.textContent = c.puntos_actuales || 0;
+    if (ptsTot) ptsTot.textContent = c.puntos_totales_historicos || 0;
+
+    // Progress bar
+    var cfg = pvConfig || {};
+    var total = c.puntos_totales_historicos || 0;
+    var bronce = cfg.nivel_bronce_min || 0;
+    var plata  = cfg.nivel_plata_min  || 500;
+    var oro    = cfg.nivel_oro_min    || 1500;
+    var pct = 0, nextLabel = '';
+    if (total >= oro) {
+      pct = 100; nextLabel = '¡Nivel Oro alcanzado!';
+      document.getElementById('pv-prog-current-nivel').textContent = 'Oro';
+    } else if (total >= plata) {
+      pct = Math.round(((total - plata) / (oro - plata)) * 100);
+      nextLabel = (oro - total) + ' pts para Oro';
+      document.getElementById('pv-prog-current-nivel').textContent = 'Plata';
+    } else {
+      pct = Math.round(((total - bronce) / (plata - bronce)) * 100);
+      nextLabel = (plata - total) + ' pts para Plata';
+      document.getElementById('pv-prog-current-nivel').textContent = 'Bronce';
+    }
+    document.getElementById('pv-prog-fill').style.width = Math.max(2, pct) + '%';
+    document.getElementById('pv-prog-next-label').textContent = nextLabel;
+
     var cd = document.getElementById('pv-dash-cooldown');
     var btn = document.getElementById('pv-accum-btn');
     if (c.ultima_acumulacion) {
       var h = (Date.now() - new Date(c.ultima_acumulacion).getTime()) / 3600000;
       var cdh = pvConfig ? (pvConfig.cooldown_horas || 24) : 24;
       if (h < cdh) {
-        cd.innerHTML = '⏳ Próxima acumulación disponible en ' + (cdh - h).toFixed(1) + ' horas';
+        cd.innerHTML = '⏳ Próxima acumulación en ' + (cdh - h).toFixed(1) + ' horas';
         cd.style.display = 'block'; btn.disabled = true; return;
       }
     }
     cd.style.display = 'none'; btn.disabled = false;
+  }
+
+  /* ── Leaderboard ───────────────────────────────────────── */
+  async function loadLeaderboard() {
+    showView('pv-leaderboard');
+    document.getElementById('pvl-podium').innerHTML = '<div class="pvl-spinner-wrap"><div class="pv-spinner"></div> Cargando...</div>';
+    document.getElementById('pvl-list').innerHTML = '';
+    try {
+      var res = await apiPost({ action: 'getLeaderboard' });
+      if (!res.ok || !res.leaderboard) { document.getElementById('pvl-podium').innerHTML = '<div class="pvl-empty">No hay datos aún</div>'; return; }
+      renderLeaderboard(res.leaderboard);
+    } catch(e) {
+      document.getElementById('pvl-podium').innerHTML = '<div class="pvl-empty">Error al cargar</div>';
+    }
+  }
+
+  function renderLeaderboard(list) {
+    var myName = pvSession && pvSession.cliente ? pvSession.cliente.nombre : '';
+    function initial(n) { return n ? n.trim()[0].toUpperCase() : '?'; }
+    function nivelClass(n) { return (n || 'bronce').toLowerCase(); }
+
+    // Podium (top 3)
+    var podEl = document.getElementById('pvl-podium');
+    if (list.length === 0) { podEl.innerHTML = '<div class="pvl-empty">Sé el primero en registrarte</div>'; return; }
+    var order = [list[1], list[0], list[2]]; // 2nd, 1st, 3rd
+    var classes = ['second','first','third'];
+    var nums = ['2','1','3'];
+    var html = '';
+    order.forEach(function(p, i) {
+      if (!p) { html += '<div class="pvl-pod ' + classes[i] + '"><div class="pvl-pod-bar"></div></div>'; return; }
+      html += '<div class="pvl-pod ' + classes[i] + '">' +
+        '<div class="pvl-pod-avatar">' + initial(p.nombre) + '</div>' +
+        '<div class="pvl-pod-name">' + p.nombre + '</div>' +
+        '<div class="pvl-pod-pts">' + p.puntos + ' pts</div>' +
+        '<div class="pvl-pod-bar"></div>' +
+        '<div class="pvl-pos-num">' + nums[i] + '</div>' +
+        '</div>';
+    });
+    podEl.innerHTML = html;
+
+    // List (4-10)
+    var listEl = document.getElementById('pvl-list');
+    var rest = list.slice(3);
+    if (rest.length === 0) { listEl.innerHTML = ''; return; }
+    listEl.innerHTML = rest.map(function(p, i) {
+      var isMe = p.nombre === myName;
+      return '<div class="pvl-row' + (isMe ? ' me' : '') + '">' +
+        '<div class="pvl-row-pos">' + (i + 4) + '</div>' +
+        '<div class="pvl-row-avatar">' + initial(p.nombre) + '</div>' +
+        '<div class="pvl-row-name">' + p.nombre + (isMe ? ' (tú)' : '') + '</div>' +
+        '<div class="pvl-row-pts">' + p.puntos + '</div>' +
+        '<div class="pvl-row-nivel ' + nivelClass(p.nivel) + '">' + (p.nivel || 'Bronce').toUpperCase() + '</div>' +
+        '</div>';
+    }).join('');
   }
 
   /* ── Acumular ──────────────────────────────────────────── */
@@ -1796,22 +2524,467 @@
     localStorage.removeItem('pv_md'); pvSession = null;
     document.getElementById('pv-login-tel').value = '';
     showView('pv-login');
+    refreshHomeChip();
+  }
+
+  /* ── Chip de usuario en la pantalla home ───────────────── */
+  function refreshHomeChip() {
+    var chip = document.getElementById('home-user-chip');
+    if (!chip) return;
+    var sess = loadSession();
+    if (!sess || !sess.cliente) { chip.style.display = 'none'; return; }
+    var c = sess.cliente;
+    var nivelRaw = c.nivel || 'Bronce';
+    var nivel = nivelRaw.toLowerCase();
+    chip.className = 'home-user-chip ' + nivel;
+    chip.style.display = 'flex';
+    var nombre = (c.nombre || 'Cliente').trim();
+    document.getElementById('huc-avatar').textContent = (nombre[0] || 'M').toUpperCase();
+    document.getElementById('huc-name').textContent = nombre.split(' ')[0];
+    document.getElementById('huc-prog-label').textContent = (c.puntos_actuales || 0) + ' pts';
+    // Progreso al siguiente nivel
+    var total = c.puntos_totales_historicos || 0;
+    var bronce = 0, plata = 500, oro = 1500;
+    if (pvConfig) {
+      bronce = pvConfig.nivel_bronce_min || 0;
+      plata  = pvConfig.nivel_plata_min  || 500;
+      oro    = pvConfig.nivel_oro_min    || 1500;
+    }
+    var pct = 0;
+    if (total >= oro) pct = 100;
+    else if (total >= plata) pct = Math.round(((total - plata) / (oro - plata)) * 100);
+    else pct = Math.round(((total - bronce) / Math.max(1, plata - bronce)) * 100);
+    document.getElementById('huc-prog-fill').style.width = Math.max(2, Math.min(100, pct)) + '%';
   }
 
   /* ── Abrir / Cerrar módulo ─────────────────────────────── */
   function openModule()  { document.getElementById('pv-overlay').classList.add('open'); checkGeo(); }
-  function closeModule() { document.getElementById('pv-overlay').classList.remove('open'); }
+  function closeModule() { document.getElementById('pv-overlay').classList.remove('open'); refreshHomeChip(); }
   function openTerms()   { document.getElementById('pv-modal-terms').classList.add('open'); }
   function closeTerms()  { document.getElementById('pv-modal-terms').classList.remove('open'); }
 
-  document.addEventListener('DOMContentLoaded', initOTP);
+  // Wrap saveSession para refrescar el chip cada vez que se guarda sesión
+  var _origSaveSession = saveSession;
+  saveSession = function(c) { _origSaveSession(c); refreshHomeChip(); };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    initOTP();
+    // Pre-cargar config pública (si no se cargó) para tener los umbrales de niveles
+    if (!pvConfig) {
+      apiPost({ action: 'getConfig' }).then(function(res) {
+        if (res && res.ok) { pvConfig = res; refreshHomeChip(); }
+      }).catch(function(){});
+    }
+    refreshHomeChip();
+  });
 
   window.pvModule = {
     openModule:openModule, closeModule:closeModule,
     showView:showView, checkGeo:checkGeo,
     doLogin:doLogin, doRegister:doRegister,
     doAccumulate:doAccumulate, logout:logout,
-    openTerms:openTerms, closeTerms:closeTerms
+    openTerms:openTerms, closeTerms:closeTerms,
+    loadLeaderboard:loadLeaderboard,
+    refreshHomeChip:refreshHomeChip
+  };
+})();
+</script>
+
+<!-- ═══════════════════ JUEGOS OVERLAY ═══════════════════ -->
+<div id="mg-overlay">
+  <div class="mg-header">
+    <button class="mg-back" id="mg-back" onclick="mgModule.back()" style="display:none;">←</button>
+    <div class="mg-title" id="mg-title">JUEGOS</div>
+    <button class="mg-close" onclick="mgModule.close()">×</button>
+  </div>
+  <div class="mg-body">
+
+    <!-- Hub -->
+    <div id="mg-hub" class="mg-view active">
+      <div class="mg-hub-intro">Diviértete mientras esperas tu pedido o gana premios reales.</div>
+      <div class="mg-cards">
+        <button class="mg-card" onclick="mgModule.openMemoria()">
+          <div class="mg-card-icon">🧠</div>
+          <div class="mg-card-body">
+            <div class="mg-card-tag">GRATIS · ESPERA</div>
+            <div class="mg-card-name">Memoria de Asados</div>
+            <div class="mg-card-desc">Encuentra los pares antes que se enfríe la parrilla</div>
+          </div>
+          <div class="mg-card-arrow">›</div>
+        </button>
+        <button class="mg-card mg-card-prize" onclick="mgModule.openRuleta()">
+          <div class="mg-card-icon">🎡</div>
+          <div class="mg-card-body">
+            <div class="mg-card-tag">GANA PREMIOS</div>
+            <div class="mg-card-name">Ruleta IG</div>
+            <div class="mg-card-desc">Gírala y consigue desde un topping hasta un producto premium</div>
+          </div>
+          <div class="mg-card-arrow">›</div>
+        </button>
+      </div>
+      <div class="mg-hub-foot">Más juegos próximamente 🎰</div>
+    </div>
+
+    <!-- Memoria -->
+    <div id="mg-memoria" class="mg-view">
+      <div class="mg-mem-stats">
+        <div class="mg-mem-stat"><span>MOVS</span><b id="mg-mem-mov">0</b></div>
+        <div class="mg-mem-stat"><span>TIEMPO</span><b id="mg-mem-time">0:00</b></div>
+        <div class="mg-mem-stat"><span>PARES</span><b id="mg-mem-pares">0/6</b></div>
+      </div>
+      <div class="mg-mem-grid" id="mg-mem-grid"></div>
+      <button class="mg-btn-sec" onclick="mgModule.resetMemoria()">↻ Reiniciar</button>
+      <div class="mg-mem-win" id="mg-mem-win" style="display:none;">
+        <div class="mg-mem-win-emoji">🏆</div>
+        <div class="mg-mem-win-title">¡GANASTE!</div>
+        <div class="mg-mem-win-stats" id="mg-mem-win-stats"></div>
+        <button class="mg-btn" onclick="mgModule.resetMemoria()">Jugar de nuevo</button>
+      </div>
+    </div>
+
+    <!-- Ruleta -->
+    <div id="mg-ruleta" class="mg-view">
+
+      <!-- Estado: requiere login -->
+      <div class="mg-rul-state" id="mg-rul-locked">
+        <div class="mg-rul-lock-card">
+          <div class="mg-rul-lock-icon">🔒</div>
+          <div class="mg-rul-lock-title">Solo para clientes Rewards</div>
+          <div class="mg-rul-lock-desc">
+            Crea tu cuenta o inicia sesión en <strong>Rewards</strong> para girar la ruleta y ganar premios reales en Montaña Dorada.
+          </div>
+          <button class="mg-btn" onclick="mgModule.goToLogin()">★ Acceder con Rewards</button>
+        </div>
+      </div>
+
+      <!-- Estado: cooldown 24h -->
+      <div class="mg-rul-state" id="mg-rul-cooldown">
+        <div class="mg-rul-lock-card">
+          <div class="mg-rul-lock-icon">⏳</div>
+          <div class="mg-rul-lock-title">Vuelve mañana</div>
+          <div class="mg-rul-lock-desc">
+            Solo puedes girar la ruleta <strong>1 vez cada 24 horas</strong>. Aprovéchala bien.
+          </div>
+          <div class="mg-rul-cooldown-timer" id="mg-rul-cooldown-timer">--:--:--</div>
+          <div class="mg-rul-cooldown-label">para tu próximo giro</div>
+        </div>
+      </div>
+
+      <!-- Estado: juego -->
+      <div class="mg-rul-state" id="mg-rul-game">
+        <div class="mg-rul-intro">
+          <div class="mg-rul-tagline">🎡 Ruleta Inteligente</div>
+          <div class="mg-rul-sub">Mientras mejor sea tu reto en Instagram, mejor el premio</div>
+        </div>
+        <div class="mg-rul-wheel-wrap">
+          <div class="mg-rul-pointer">▼</div>
+          <div class="mg-rul-wheel" id="mg-rul-wheel"></div>
+          <div class="mg-rul-center"><div class="mg-rul-center-icon">🌟</div></div>
+        </div>
+        <div class="mg-rul-legend">
+          <div class="mg-rul-legend-item"><span class="mg-leg-dot" style="background:#2ecc71"></span>50% Reto fácil</div>
+          <div class="mg-rul-legend-item"><span class="mg-leg-dot" style="background:#f1c40f"></span>30% Reto valioso</div>
+          <div class="mg-rul-legend-item"><span class="mg-leg-dot" style="background:#e74c3c"></span>15% Reto fuerte</div>
+          <div class="mg-rul-legend-item"><span class="mg-leg-dot" style="background:#FFD700"></span>5% Reto viral 🔥</div>
+        </div>
+        <button class="mg-btn mg-rul-spin" id="mg-rul-spin" onclick="mgModule.spinRuleta()">GIRAR LA RULETA</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal resultado ruleta -->
+<div id="mg-rul-modal">
+  <div class="mg-rul-modal-card" id="mg-rul-modal-card">
+    <div class="mg-rul-modal-tier" id="mg-rul-tier">RETO</div>
+    <div class="mg-rul-modal-emoji" id="mg-rul-modal-emoji">🎁</div>
+    <div class="mg-rul-modal-name" id="mg-rul-modal-name">Reto</div>
+    <div class="mg-rul-modal-prize-label">PREMIO</div>
+    <div class="mg-rul-modal-prize" id="mg-rul-modal-prize">Premio</div>
+    <div class="mg-rul-modal-instructions">Completa el reto en Instagram desde tu celular, muéstrale la prueba al mesero y recibe tu premio en la mesa al instante. ⚡</div>
+    <button class="mg-btn" onclick="mgModule.closeResult()">¡Hecho!</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ─── Estado ───
+  var _memState = null;
+  var _rulRotation = 0;
+  var _rulSpinning = false;
+  var _wheelBuilt = false;
+  var _rulCooldownTimer = null;
+  var RUL_COOLDOWN_KEY = 'mg_rul_last';
+  var RUL_COOLDOWN_MS  = 24 * 3600 * 1000;
+
+  // ─── Configuración ruleta ───
+  // 20 segmentos mezclados: 10 verdes (50%), 6 amarillos (30%), 3 rojos (15%), 1 oro (5%)
+  var RUL_SEGMENTS = ['v','y','v','r','v','y','v','o','v','y','v','y','v','r','v','y','v','y','v','r'];
+  var RUL_PRIZES = {
+    v: [
+      { emoji:'📷', reto:'Sigue a @doradamontana en Instagram desde tu celular',                premio:'Chimichurri extra gratis ahora' },
+      { emoji:'❤️', reto:'Dale like a las últimas 3 publicaciones de @doradamontana',           premio:'Pan de ajo extra gratis ahora' },
+      { emoji:'🔥', reto:'Comenta "🔥" en la última foto de @doradamontana',                    premio:'Refill de bebida gratis ahora' }
+    ],
+    y: [
+      { emoji:'📸', reto:'Sube una historia con tu plato y etiqueta a @doradamontana',          premio:'Gaseosa o jugo pequeño gratis ahora' },
+      { emoji:'📍', reto:'Sube una historia activando la ubicación "Montaña Dorada"',           premio:'Porción extra de papas fritas gratis ahora' },
+      { emoji:'👥', reto:'Etiqueta a 2 amigos en la última publicación de @doradamontana',      premio:'Mini postre de la casa gratis ahora' }
+    ],
+    r: [
+      { emoji:'🍖', reto:'Sube una foto con tu parrillada y menciona a @doradamontana',         premio:'Cerveza o jugo grande gratis ahora' },
+      { emoji:'⭐', reto:'Sube una historia diciendo por qué te gusta Montaña Dorada',           premio:'Postre completo de la casa gratis ahora' },
+      { emoji:'🔁', reto:'Comparte el perfil @doradamontana en tu historia',                    premio:'Choclo asado o ensalada premium gratis ahora' }
+    ],
+    o: [
+      { emoji:'🎬', reto:'Graba un Reel de 15s probando tu plato y etiqueta a @doradamontana',  premio:'Plato premium de la casa gratis ahora 🔥' },
+      { emoji:'🎤', reto:'Haz un Reel de mini review (5 ⭐) mencionando @doradamontana',         premio:'Combo premium: plato estrella + bebida gratis ahora 🔥' },
+      { emoji:'🚀', reto:'Sube un Reel diciendo "¡La mejor parrilla de Piñas del Oro!"',         premio:'Plato premium + postre + bebida gratis ahora 🔥' }
+    ]
+  };
+  var TIER_NAMES  = { v:'RETO BÁSICO', y:'RETO VALIOSO', r:'RETO FUERTE', o:'RETO VIRAL 🔥' };
+  var TIER_COLORS = { v:'#2ecc71', y:'#f1c40f', r:'#e74c3c', o:'#FFD700' };
+
+  // ─── Navegación ───
+  function open(){ document.getElementById('mg-overlay').classList.add('open'); showView('mg-hub'); }
+  function close(){
+    document.getElementById('mg-overlay').classList.remove('open');
+    if (_memState && _memState.timer) clearInterval(_memState.timer);
+    _memState = null;
+    stopCooldownTimer();
+    var modal = document.getElementById('mg-rul-modal');
+    if (modal) modal.classList.remove('open');
+  }
+  function showView(id){
+    var views = document.querySelectorAll('#mg-overlay .mg-view');
+    for (var i=0; i<views.length; i++) views[i].classList.remove('active');
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    var back = document.getElementById('mg-back');
+    var title = document.getElementById('mg-title');
+    if (id === 'mg-hub')          { back.style.display='none';        title.textContent='JUEGOS'; }
+    else if (id === 'mg-memoria') { back.style.display='inline-block'; title.textContent='MEMORIA DE ASADOS'; }
+    else if (id === 'mg-ruleta')  { back.style.display='inline-block'; title.textContent='RULETA IG'; }
+  }
+  function back(){
+    if (_memState && _memState.timer) clearInterval(_memState.timer);
+    _memState = null;
+    stopCooldownTimer();
+    showView('mg-hub');
+  }
+  function openMemoria(){ showView('mg-memoria'); initMemoria(); }
+  function openRuleta(){
+    showView('mg-ruleta');
+    stopCooldownTimer();
+
+    // 1. Requiere sesión Rewards
+    var sess = readPvSession();
+    if (!sess) { showRulState('mg-rul-locked'); return; }
+
+    // 2. Cooldown 24h
+    var last = parseInt(localStorage.getItem(RUL_COOLDOWN_KEY) || '0', 10);
+    var remaining = (last + RUL_COOLDOWN_MS) - Date.now();
+    if (last && remaining > 0) {
+      showRulState('mg-rul-cooldown');
+      updateCooldownDisplay(remaining);
+      _rulCooldownTimer = setInterval(function(){
+        var rem = (last + RUL_COOLDOWN_MS) - Date.now();
+        if (rem <= 0) { stopCooldownTimer(); openRuleta(); }
+        else updateCooldownDisplay(rem);
+      }, 1000);
+      return;
+    }
+
+    // 3. Listo para girar
+    showRulState('mg-rul-game');
+    buildWheel();
+  }
+  function showRulState(id){
+    var states = document.querySelectorAll('#mg-ruleta .mg-rul-state');
+    for (var i=0; i<states.length; i++) states[i].classList.remove('active');
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+  function readPvSession(){
+    try {
+      var raw = localStorage.getItem('pv_md');
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      var min = (window.pvConfig && window.pvConfig.sesion_minutos) ? window.pvConfig.sesion_minutos : 60;
+      if (Date.now() - data.ts > min * 60000) return null;
+      return data;
+    } catch(e) { return null; }
+  }
+  function updateCooldownDisplay(ms){
+    var totalSec = Math.max(0, Math.floor(ms / 1000));
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+    var el = document.getElementById('mg-rul-cooldown-timer');
+    if (el) el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function stopCooldownTimer(){
+    if (_rulCooldownTimer) { clearInterval(_rulCooldownTimer); _rulCooldownTimer = null; }
+  }
+  function goToLogin(){
+    close();
+    if (window.pvModule && window.pvModule.openModule) window.pvModule.openModule();
+  }
+
+  // ─── Memoria ───
+  function initMemoria(){
+    var emojis = ['🥩','🍖','🌽','🥔','🌭','🍷'];
+    var cards = emojis.concat(emojis).map(function(e){ return { emoji:e, matched:false }; });
+    cards.sort(function(){ return Math.random() - 0.5; });
+    _memState = { cards:cards, flipped:[], moves:0, matches:0, startTime:null, timer:null, locked:false };
+    renderMemoria();
+    document.getElementById('mg-mem-mov').textContent = '0';
+    document.getElementById('mg-mem-time').textContent = '0:00';
+    document.getElementById('mg-mem-pares').textContent = '0/6';
+    document.getElementById('mg-mem-win').style.display = 'none';
+    document.getElementById('mg-mem-grid').style.display = 'grid';
+  }
+  function renderMemoria(){
+    var grid = document.getElementById('mg-mem-grid');
+    grid.innerHTML = _memState.cards.map(function(c, i){
+      var flipped = _memState.flipped.indexOf(i) >= 0 || c.matched;
+      var matched = c.matched;
+      return '<button class="mg-mem-card' + (flipped?' flipped':'') + (matched?' matched':'') + '" '
+        + 'onclick="mgModule.flipCard(' + i + ')">'
+        + '<span class="mg-mem-back">?</span>'
+        + '<span class="mg-mem-front">' + c.emoji + '</span>'
+        + '</button>';
+    }).join('');
+  }
+  function flipCard(idx){
+    if (!_memState || _memState.locked) return;
+    if (_memState.cards[idx].matched) return;
+    if (_memState.flipped.indexOf(idx) >= 0) return;
+    if (!_memState.startTime) startMemTimer();
+    _memState.flipped.push(idx);
+    renderMemoria();
+    if (_memState.flipped.length === 2){
+      _memState.moves++;
+      document.getElementById('mg-mem-mov').textContent = _memState.moves;
+      var a = _memState.flipped[0], b = _memState.flipped[1];
+      if (_memState.cards[a].emoji === _memState.cards[b].emoji){
+        _memState.cards[a].matched = true;
+        _memState.cards[b].matched = true;
+        _memState.matches++;
+        _memState.flipped = [];
+        document.getElementById('mg-mem-pares').textContent = _memState.matches + '/6';
+        renderMemoria();
+        if (_memState.matches === 6) winMemoria();
+      } else {
+        _memState.locked = true;
+        setTimeout(function(){
+          if (!_memState) return;
+          _memState.flipped = [];
+          _memState.locked = false;
+          renderMemoria();
+        }, 800);
+      }
+    }
+  }
+  function startMemTimer(){
+    _memState.startTime = Date.now();
+    _memState.timer = setInterval(function(){
+      if (!_memState || !_memState.startTime) return;
+      var sec = Math.floor((Date.now() - _memState.startTime) / 1000);
+      var m = Math.floor(sec/60), s = sec%60;
+      var el = document.getElementById('mg-mem-time');
+      if (el) el.textContent = m + ':' + (s<10?'0':'') + s;
+    }, 1000);
+  }
+  function winMemoria(){
+    clearInterval(_memState.timer);
+    var sec = Math.floor((Date.now() - _memState.startTime) / 1000);
+    var m = Math.floor(sec/60), s = sec%60;
+    document.getElementById('mg-mem-grid').style.display = 'none';
+    document.getElementById('mg-mem-win').style.display = 'block';
+    document.getElementById('mg-mem-win-stats').textContent = 'En ' + _memState.moves + ' movimientos · ' + m + ':' + (s<10?'0':'') + s;
+  }
+  function resetMemoria(){
+    if (_memState && _memState.timer) clearInterval(_memState.timer);
+    initMemoria();
+  }
+
+  // ─── Ruleta ───
+  function buildWheel(){
+    if (_wheelBuilt) return;
+    var wheel = document.getElementById('mg-rul-wheel');
+    var colors = { v:['#27ae60','#2ecc71'], y:['#e67e22','#f39c12'], r:['#c0392b','#e74c3c'], o:['#D4A017','#FFD700'] };
+    var stops = RUL_SEGMENTS.map(function(t, i){
+      var c = colors[t][i % 2];
+      return c + ' ' + (i*18) + 'deg ' + ((i+1)*18) + 'deg';
+    });
+    wheel.style.background = 'conic-gradient(' + stops.join(', ') + ')';
+    _wheelBuilt = true;
+  }
+  function spinRuleta(){
+    if (_rulSpinning) return;
+    _rulSpinning = true;
+    var btn = document.getElementById('mg-rul-spin');
+    btn.disabled = true;
+    btn.textContent = 'GIRANDO...';
+
+    // Selección de tier ponderada
+    var r = Math.random(), tier;
+    if (r < 0.50)      tier = 'v';
+    else if (r < 0.80) tier = 'y';
+    else if (r < 0.95) tier = 'r';
+    else               tier = 'o';
+
+    // Segmento aleatorio del tier
+    var candidates = [];
+    RUL_SEGMENTS.forEach(function(t, i){ if (t === tier) candidates.push(i); });
+    var segIdx = candidates[Math.floor(Math.random() * candidates.length)];
+
+    // Premio aleatorio del tier
+    var prizes = RUL_PRIZES[tier];
+    var prize = prizes[Math.floor(Math.random() * prizes.length)];
+
+    // Cálculo de rotación final (al menos 6 vueltas)
+    var segCenter = segIdx * 18 + 9;
+    var baseTurns = Math.ceil(_rulRotation / 360) + 6;
+    var target = baseTurns * 360 + (360 - segCenter);
+    while (target <= _rulRotation + 6 * 360) target += 360;
+    _rulRotation = target;
+
+    var wheel = document.getElementById('mg-rul-wheel');
+    wheel.style.transform = 'rotate(' + target + 'deg)';
+
+    setTimeout(function(){
+      showRuletaResult(tier, prize);
+      _rulSpinning = false;
+      // Persistir cooldown 24h
+      localStorage.setItem(RUL_COOLDOWN_KEY, Date.now().toString());
+      btn.disabled = true;
+      btn.textContent = 'VUELVE EN 24H';
+    }, 5100);
+  }
+  function showRuletaResult(tier, prize){
+    document.getElementById('mg-rul-tier').textContent = TIER_NAMES[tier];
+    document.getElementById('mg-rul-tier').style.color = TIER_COLORS[tier];
+    document.getElementById('mg-rul-modal-card').style.borderColor = TIER_COLORS[tier];
+    document.getElementById('mg-rul-modal-emoji').textContent = prize.emoji;
+    document.getElementById('mg-rul-modal-name').textContent = prize.reto;
+    document.getElementById('mg-rul-modal-prize').textContent = prize.premio;
+    document.getElementById('mg-rul-modal').classList.add('open');
+  }
+  function closeResult(){ document.getElementById('mg-rul-modal').classList.remove('open'); }
+
+  window.mgModule = {
+    open:open, close:close, back:back,
+    openMemoria:openMemoria, openRuleta:openRuleta,
+    flipCard:flipCard, resetMemoria:resetMemoria,
+    spinRuleta:spinRuleta, closeResult:closeResult,
+    goToLogin:goToLogin
   };
 })();
 </script>
