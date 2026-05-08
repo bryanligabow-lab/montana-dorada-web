@@ -757,20 +757,11 @@
   /* Cuando #md-home tiene la clase .mday-mode usa la imagen como fondo
      y oculta el logo/nombre originales (la imagen ya los incluye) */
   #md-home.mday-mode .home-bg {
-    background:
-      linear-gradient(180deg, rgba(8,4,6,0.15) 0%, transparent 25%, transparent 60%, rgba(8,4,6,0.55) 100%),
-      url('mday-bg.jpg') center center / cover no-repeat,
-      #1a0a10;
+    background: #1a0a10 url('mday-bg.jpg') center center / cover no-repeat !important;
   }
-  #md-home.mday-mode .home-bg::before { display: none; }
+  #md-home.mday-mode .home-bg::before { display: none !important; }
   #md-home.mday-mode .home-overlay {
-    background: linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.05) 0%,
-      rgba(0,0,0,0.05) 45%,
-      rgba(8,4,6,0.55) 78%,
-      rgba(8,4,6,0.92) 100%
-    );
+    background: transparent !important;
   }
   #md-home.mday-mode .home-logo-wrap,
   #md-home.mday-mode .home-name,
