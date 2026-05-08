@@ -1307,6 +1307,437 @@
     .mday-options li { font-size: 12px; }
   }
 
+  /* ════════════════════════════════════════
+     INTERACTIVO: TABS, CHIPS, SUMMARY
+  ════════════════════════════════════════ */
+  /* Espacio para la sticky bar abajo */
+  #mday-overlay { padding-bottom: 110px !important; }
+
+  .mday-tabs {
+    display: flex; gap: 8px;
+    margin: 8px 0 16px;
+    padding: 0 2px;
+  }
+  .mday-tab {
+    flex: 1;
+    background: linear-gradient(180deg, rgba(20,12,16,0.85), rgba(15,8,12,0.85));
+    border: 1px solid rgba(255, 180, 200, 0.20);
+    border-radius: 14px;
+    padding: 12px 8px 10px;
+    cursor: pointer;
+    color: rgba(240, 232, 216, 0.55);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column; align-items: center;
+    gap: 2px;
+    position: relative; overflow: hidden;
+  }
+  .mday-tab::before {
+    content: ''; position: absolute;
+    top: 0; left: 18%; right: 18%; height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(255,200,215,0.35), transparent);
+    opacity: 0.4; transition: opacity 0.3s;
+  }
+  .mday-tab:hover { border-color: rgba(255, 180, 200, 0.45); color: rgba(240, 232, 216, 0.85); }
+  .mday-tab.active {
+    background: linear-gradient(180deg, rgba(220, 80, 110, 0.20), rgba(15,8,12,0.92));
+    border-color: rgba(255, 180, 200, 0.7);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 28px rgba(220, 80, 110, 0.30);
+    transform: translateY(-2px);
+  }
+  .mday-tab.active::before {
+    background: linear-gradient(90deg, transparent, rgba(255,200,215,0.95), transparent);
+    opacity: 1;
+  }
+  .mtab-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 9px; letter-spacing: 2.5px;
+    color: rgba(255, 200, 215, 0.7);
+    text-transform: uppercase;
+  }
+  .mday-tab.active .mtab-badge { color: #FFC4D5; }
+  .mtab-name {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 2px;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .mday-tab.active .mtab-name { color: #fff; }
+  .mtab-price {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 22px;
+    background: linear-gradient(135deg, #FFE4B5, #E8C96A 50%, #C9A84C);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .mtab-extra {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: rgba(232, 184, 121, 0.7);
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Builds (paneles intercambiables) */
+  .mday-builds { position: relative; }
+  .mday-build {
+    display: none;
+    animation: mdayBuildIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .mday-build.active { display: block; }
+  @keyframes mdayBuildIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .mday-build-head {
+    text-align: center;
+    padding: 14px 8px 18px;
+  }
+  .mday-build-title {
+    font-family: 'Cinzel', serif;
+    font-size: 22px; font-style: italic;
+    background: linear-gradient(135deg, #FFE4B5, #E89AAF, #FFD9DC);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.15;
+  }
+  .mday-build-title .hrt { -webkit-text-fill-color: initial; font-size: 16px; }
+  .mday-build-sub {
+    font-size: 11px;
+    color: rgba(240, 232, 216, 0.5);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    font-style: italic;
+  }
+
+  /* Chips clickeables */
+  .mday-chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 4px;
+  }
+  .mday-chip {
+    position: relative;
+    background: linear-gradient(180deg, rgba(28, 18, 22, 0.92), rgba(18, 10, 14, 0.92));
+    border: 1px solid rgba(255, 180, 200, 0.18);
+    border-radius: 22px;
+    padding: 9px 14px 9px 14px;
+    color: rgba(240, 232, 216, 0.85);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex; align-items: center; gap: 6px;
+    user-select: none;
+    overflow: hidden;
+  }
+  .mday-chip .ck {
+    display: inline-block;
+    width: 0; opacity: 0;
+    color: #1a0a10;
+    font-weight: 700;
+    font-size: 11px;
+    background: #FFC4D5;
+    border-radius: 50%;
+    line-height: 16px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: width 0.28s ease, opacity 0.2s ease, margin 0.28s ease;
+    margin-right: 0;
+  }
+  .mday-chip .incl-tag {
+    font-size: 8px; letter-spacing: 1.5px;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.35);
+    padding: 1px 6px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    margin-left: 4px;
+  }
+  .mday-chip:hover {
+    border-color: rgba(255, 180, 200, 0.55);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4), 0 0 16px rgba(220, 80, 110, 0.18);
+  }
+  .mday-chip.selected {
+    background: linear-gradient(135deg, rgba(220, 80, 110, 0.45), rgba(232, 184, 121, 0.20));
+    border-color: rgba(255, 200, 215, 0.95);
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.45), 0 0 24px rgba(220, 80, 110, 0.45);
+    animation: chipPick 0.45s ease;
+  }
+  .mday-chip.selected .ck {
+    width: 16px; height: 16px;
+    opacity: 1;
+    margin-right: 4px;
+  }
+  .mday-chip.fixed {
+    cursor: default;
+    background: linear-gradient(135deg, rgba(232, 184, 121, 0.20), rgba(232, 184, 121, 0.06));
+    border-color: rgba(232, 184, 121, 0.45);
+    color: #FFE4B5;
+  }
+  .mday-chip.fixed .ck {
+    background: var(--gold);
+    color: #1a0a10;
+  }
+  .mday-chip.fixed:hover { transform: none; box-shadow: none; }
+  .mday-chip.gold-chip { color: rgba(232, 184, 121, 0.95); }
+  .mday-chip.gold-chip.selected { color: #fff; }
+  @keyframes chipPick {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.07); }
+    100% { transform: scale(1); }
+  }
+
+  /* Sticky summary bar */
+  .mday-summary-bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 260;
+    background: linear-gradient(180deg, rgba(15, 8, 12, 0.55) 0%, rgba(8, 4, 6, 0.96) 35%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 12px 14px 18px;
+    border-top: 1px solid rgba(255, 180, 200, 0.20);
+    display: none;
+    transform: translateY(120%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #mday-overlay.open ~ .mday-summary-bar,
+  #mday-overlay.open .mday-summary-bar {
+    /* fallback in case nesting */
+  }
+  #mday-overlay.open + .mday-summary-bar { display: block; transform: translateY(0); }
+  .mday-summary-bar.show { display: block; transform: translateY(0); }
+  .mday-summary-bar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 200, 215, 0.6), transparent);
+  }
+  .mday-sum-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+    max-width: 420px; margin-left: auto; margin-right: auto;
+  }
+  .mday-sum-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px; letter-spacing: 2px;
+    color: rgba(255, 200, 215, 0.85);
+    text-transform: uppercase;
+  }
+  .mday-sum-progress {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 10px;
+    color: rgba(232, 184, 121, 0.95);
+    background: rgba(232, 184, 121, 0.10);
+    border: 1px solid rgba(232, 184, 121, 0.30);
+    padding: 2px 7px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .mday-sum-price {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 26px;
+    background: linear-gradient(135deg, #FFE4B5, #E8C96A);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    transition: transform 0.3s;
+  }
+  .mday-sum-price.flash { animation: priceFlash 0.5s ease; }
+  @keyframes priceFlash {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.18); }
+  }
+  .mday-cta {
+    width: 100%;
+    max-width: 420px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(135deg, #C0392B 0%, #8B1F1A 60%, #C0392B 100%);
+    background-size: 200% 100%;
+    border: 1px solid rgba(255, 180, 200, 0.45);
+    border-radius: 14px;
+    padding: 14px 20px;
+    color: #FFE4B5;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.55);
+    animation: ctaShimmer 4s linear infinite;
+  }
+  @keyframes ctaShimmer {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .mday-cta:hover:not(:disabled) {
+    border-color: #FFC4D5;
+    color: #fff;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.6), 0 0 30px rgba(220, 80, 110, 0.45);
+    transform: translateY(-2px);
+  }
+  .mday-cta:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, rgba(80, 40, 50, 0.85), rgba(50, 25, 35, 0.85));
+    border-color: rgba(255, 180, 200, 0.25);
+    color: rgba(255, 200, 215, 0.6);
+    animation: none;
+  }
+  .mday-cta .cta-arrow {
+    font-size: 22px;
+    transition: transform 0.3s;
+  }
+  .mday-cta:hover:not(:disabled) .cta-arrow { transform: translateX(4px); }
+
+  /* Modal "Mostrar al mesero" */
+  #mday-share-modal {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 280;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+    padding: 20px 16px;
+    animation: mdayShareIn 0.35s ease;
+  }
+  #mday-share-modal.open { display: flex; }
+  @keyframes mdayShareIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .mday-share-card {
+    width: 100%; max-width: 380px;
+    background: linear-gradient(180deg, #1a0e12 0%, #0d0608 100%);
+    border: 1.5px solid rgba(255, 180, 200, 0.55);
+    border-radius: 22px;
+    padding: 26px 22px 22px;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 60px rgba(220, 80, 110, 0.30);
+    animation: mdayShareCardIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes mdayShareCardIn {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .mday-share-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 18%; right: 18%; height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(255, 200, 215, 0.85), transparent);
+  }
+  .mday-share-close {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(20, 12, 16, 0.9);
+    border: 1px solid rgba(255, 180, 200, 0.35);
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    color: #FFC4D5;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mday-share-close:hover { transform: rotate(90deg); border-color: #FFC4D5; }
+  .mday-share-eyebrow {
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px;
+    color: #FFC4D5;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'Cinzel', serif;
+  }
+  .mday-share-title {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #FFE4B5, #E8C96A 50%, #C9A84C);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .mday-share-sub {
+    text-align: center;
+    font-size: 12px;
+    font-style: italic;
+    color: rgba(255, 200, 215, 0.85);
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+  }
+  .mday-share-list {
+    list-style: none;
+    padding: 14px 0 8px;
+    margin: 0;
+    border-top: 1px dashed rgba(255, 180, 200, 0.18);
+    border-bottom: 1px dashed rgba(255, 180, 200, 0.18);
+  }
+  .mday-share-list li {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 180, 200, 0.06);
+  }
+  .mday-share-list li:last-child { border-bottom: none; }
+  .mday-share-list .lbl {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: rgba(255, 200, 215, 0.55);
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+  }
+  .mday-share-list .val {
+    font-weight: 500;
+    text-align: right;
+    max-width: 60%;
+  }
+  .mday-share-list .val.gold {
+    color: #E8C96A;
+  }
+  .mday-share-foot {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: rgba(232, 184, 121, 0.7);
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+  }
+
+  @media (max-width: 380px) {
+    .mday-tab { padding: 10px 6px 8px; }
+    .mtab-name { font-size: 11px; }
+    .mtab-price { font-size: 19px; }
+    .mday-chip { font-size: 12px; padding: 8px 12px; }
+    .mday-build-title { font-size: 19px; }
+    .mday-share-title { font-size: 24px; }
+    .mday-share-list li { font-size: 13px; }
+    .mday-cta { font-size: 11px; padding: 12px 16px; }
+    .mday-sum-price { font-size: 22px; }
+  }
+
   .home-overlay {
     position: absolute; inset: 0;
     background: linear-gradient(
@@ -3682,154 +4113,193 @@
       </div>
     </div>
 
-    <!-- ── OPCIÓN 1 ── -->
-    <div class="mday-card">
-      <div class="mday-card-tag">Opción 1</div>
-      <div class="mday-card-head">
-        <div class="mday-card-title">Con Ensalada Rusa</div>
-        <div class="mday-card-price">$10<small> USD</small></div>
-        <span class="mday-card-pernote">Por persona</span>
-      </div>
-
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🥗</span><span>Entrada</span>
-        </div>
-        <ul class="mday-options">
-          <li>Ensalada Rusa</li>
-        </ul>
-      </div>
-
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🍚</span><span>Acompañamiento</span>
-          <span class="pick">elige uno</span>
-        </div>
-        <ul class="mday-options">
-          <li>Papines salteados con acabado dorado</li>
-          <li>Papa chaucha parmesana</li>
-          <li class="gold">Arroz blanco bien presentado <span class="mday-tag-incl">incluido</span></li>
-        </ul>
-      </div>
-
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🥩</span><span>Proteína</span>
-          <span class="pick">elige una</span>
-        </div>
-        <ul class="mday-options">
-          <li>Chuleta de cerdo</li>
-          <li>Costilla de cerdo</li>
-          <li>Res</li>
-          <li>Pollo</li>
-          <li>Cerdo</li>
-        </ul>
-      </div>
-
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🍄</span><span>Salsa</span>
-          <span class="pick">elige una</span>
-        </div>
-        <ul class="mday-options">
-          <li>Salsa de champiñones</li>
-          <li>Salsa de camarón</li>
-        </ul>
-      </div>
-
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🥤</span><span>Jugo</span>
-          <span class="pick">elige uno</span>
-        </div>
-        <ul class="mday-options">
-          <li>Jugo de uva</li>
-          <li>Jugo de naranja</li>
-        </ul>
-      </div>
-
-      <div class="mday-included-strip">
-        <span class="ico">🍲</span><span>Entrada del día incluida</span>
-      </div>
+    <!-- ── TABS de Opciones ── -->
+    <div class="mday-tabs" role="tablist">
+      <button class="mday-tab active" data-opt="1" type="button" onclick="window.mdayMenu && mdayMenu.switchTab(1)">
+        <span class="mtab-badge">Opción 1</span>
+        <span class="mtab-name">Ensalada César</span>
+        <span class="mtab-price">$12</span>
+        <span class="mtab-extra">+ postre 🍫</span>
+      </button>
+      <button class="mday-tab" data-opt="2" type="button" onclick="window.mdayMenu && mdayMenu.switchTab(2)">
+        <span class="mtab-badge">Opción 2</span>
+        <span class="mtab-name">Ensalada Rusa</span>
+        <span class="mtab-price">$10</span>
+        <span class="mtab-extra">clásico</span>
+      </button>
     </div>
 
-    <!-- ── OPCIÓN 2 ── -->
-    <div class="mday-card">
-      <div class="mday-card-tag">Opción 2 · con postre</div>
-      <div class="mday-card-head">
-        <div class="mday-card-title">Con Ensalada César</div>
-        <div class="mday-card-price">$12<small> USD</small></div>
-        <span class="mday-card-pernote">Por persona</span>
-      </div>
+    <div class="mday-builds">
 
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🥗</span><span>Entrada</span>
+      <!-- ══ OPCIÓN 1: César + postre · $12 ══ -->
+      <div class="mday-build active" data-opt="1">
+        <div class="mday-build-head">
+          <div class="mday-build-title">Con Ensalada César <span class="hrt">💗</span></div>
+          <div class="mday-build-sub">Personaliza tu plato del día de la madre</div>
         </div>
-        <ul class="mday-options">
-          <li>Ensalada César</li>
-        </ul>
-      </div>
 
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🍚</span><span>Acompañamiento</span>
-          <span class="pick">elige uno</span>
+        <!-- Entrada (fija) -->
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🥗</span><span>Entrada</span>
+            <span class="pick">incluida</span>
+          </div>
+          <div class="mday-chips" data-group="entrada" data-opt="1">
+            <button class="mday-chip selected fixed" type="button" data-val="Ensalada César" disabled>
+              <span class="ck">✓</span>Ensalada César
+            </button>
+          </div>
         </div>
-        <ul class="mday-options">
-          <li>Papines salteados con acabado dorado</li>
-          <li>Papa chaucha parmesana</li>
-          <li class="gold">Arroz blanco bien presentado <span class="mday-tag-incl">incluido</span></li>
-        </ul>
-      </div>
 
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🥩</span><span>Proteína</span>
-          <span class="pick">elige una</span>
+        <!-- Acompañamiento -->
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🍚</span><span>Acompañamiento</span>
+            <span class="pick">elige uno</span>
+          </div>
+          <div class="mday-chips" data-group="acomp" data-opt="1">
+            <button class="mday-chip" type="button" data-val="Papines salteados con acabado dorado">
+              <span class="ck">✓</span>Papines salteados dorado
+            </button>
+            <button class="mday-chip" type="button" data-val="Papa chaucha parmesana">
+              <span class="ck">✓</span>Papa chaucha parmesana
+            </button>
+            <button class="mday-chip gold-chip" type="button" data-val="Arroz blanco">
+              <span class="ck">✓</span>Arroz blanco <span class="incl-tag">incluido</span>
+            </button>
+          </div>
         </div>
-        <ul class="mday-options">
-          <li>Chuleta de cerdo</li>
-          <li>Costilla de cerdo</li>
-          <li>Res</li>
-          <li>Pollo</li>
-          <li>Cerdo</li>
-        </ul>
-      </div>
 
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🍄</span><span>Salsa</span>
-          <span class="pick">elige una</span>
+        <!-- Proteína -->
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🥩</span><span>Proteína</span>
+            <span class="pick">elige una</span>
+          </div>
+          <div class="mday-chips" data-group="proteina" data-opt="1">
+            <button class="mday-chip" type="button" data-val="Chuleta de cerdo"><span class="ck">✓</span>Chuleta de cerdo</button>
+            <button class="mday-chip" type="button" data-val="Costilla de cerdo"><span class="ck">✓</span>Costilla de cerdo</button>
+            <button class="mday-chip" type="button" data-val="Res"><span class="ck">✓</span>Res</button>
+            <button class="mday-chip" type="button" data-val="Pollo"><span class="ck">✓</span>Pollo</button>
+            <button class="mday-chip" type="button" data-val="Cerdo"><span class="ck">✓</span>Cerdo</button>
+          </div>
         </div>
-        <ul class="mday-options">
-          <li>Salsa de champiñones</li>
-          <li>Salsa de camarón</li>
-        </ul>
-      </div>
 
-      <div class="mday-section">
-        <div class="mday-section-h">
-          <span class="ico">🥤</span><span>Jugo</span>
-          <span class="pick">elige uno</span>
+        <!-- Salsa -->
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🍄</span><span>Salsa</span>
+            <span class="pick">elige una</span>
+          </div>
+          <div class="mday-chips" data-group="salsa" data-opt="1">
+            <button class="mday-chip" type="button" data-val="Salsa de champiñones"><span class="ck">✓</span>Salsa de champiñones</button>
+            <button class="mday-chip" type="button" data-val="Salsa de camarón"><span class="ck">✓</span>Salsa de camarón</button>
+          </div>
         </div>
-        <ul class="mday-options">
-          <li>Jugo de uva</li>
-          <li>Jugo de naranja</li>
-        </ul>
+
+        <!-- Jugo -->
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🥤</span><span>Jugo</span>
+            <span class="pick">elige uno</span>
+          </div>
+          <div class="mday-chips" data-group="jugo" data-opt="1">
+            <button class="mday-chip" type="button" data-val="Jugo de uva"><span class="ck">✓</span>Jugo de uva</button>
+            <button class="mday-chip" type="button" data-val="Jugo de naranja"><span class="ck">✓</span>Jugo de naranja</button>
+          </div>
+        </div>
+
+        <!-- Postre incluido -->
+        <div class="mday-dessert-strip">
+          <span class="ico">🍫</span>
+          <span>
+            <strong>Postre incluido</strong>
+            Mini volcán de chocolate con helado
+          </span>
+        </div>
+        <div class="mday-included-strip">
+          <span class="ico">🍲</span><span>Entrada del día incluida</span>
+        </div>
       </div>
 
-      <div class="mday-dessert-strip">
-        <span class="ico">🍫</span>
-        <span>
-          <strong>Postre incluido</strong>
-          Mini volcán de chocolate con helado
-        </span>
+      <!-- ══ OPCIÓN 2: Rusa · $10 ══ -->
+      <div class="mday-build" data-opt="2">
+        <div class="mday-build-head">
+          <div class="mday-build-title">Con Ensalada Rusa <span class="hrt">💗</span></div>
+          <div class="mday-build-sub">Personaliza tu plato del día de la madre</div>
+        </div>
+
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🥗</span><span>Entrada</span>
+            <span class="pick">incluida</span>
+          </div>
+          <div class="mday-chips" data-group="entrada" data-opt="2">
+            <button class="mday-chip selected fixed" type="button" data-val="Ensalada Rusa" disabled>
+              <span class="ck">✓</span>Ensalada Rusa
+            </button>
+          </div>
+        </div>
+
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🍚</span><span>Acompañamiento</span>
+            <span class="pick">elige uno</span>
+          </div>
+          <div class="mday-chips" data-group="acomp" data-opt="2">
+            <button class="mday-chip" type="button" data-val="Papines salteados con acabado dorado">
+              <span class="ck">✓</span>Papines salteados dorado
+            </button>
+            <button class="mday-chip" type="button" data-val="Papa chaucha parmesana">
+              <span class="ck">✓</span>Papa chaucha parmesana
+            </button>
+            <button class="mday-chip gold-chip" type="button" data-val="Arroz blanco">
+              <span class="ck">✓</span>Arroz blanco <span class="incl-tag">incluido</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🥩</span><span>Proteína</span>
+            <span class="pick">elige una</span>
+          </div>
+          <div class="mday-chips" data-group="proteina" data-opt="2">
+            <button class="mday-chip" type="button" data-val="Chuleta de cerdo"><span class="ck">✓</span>Chuleta de cerdo</button>
+            <button class="mday-chip" type="button" data-val="Costilla de cerdo"><span class="ck">✓</span>Costilla de cerdo</button>
+            <button class="mday-chip" type="button" data-val="Res"><span class="ck">✓</span>Res</button>
+            <button class="mday-chip" type="button" data-val="Pollo"><span class="ck">✓</span>Pollo</button>
+            <button class="mday-chip" type="button" data-val="Cerdo"><span class="ck">✓</span>Cerdo</button>
+          </div>
+        </div>
+
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🍄</span><span>Salsa</span>
+            <span class="pick">elige una</span>
+          </div>
+          <div class="mday-chips" data-group="salsa" data-opt="2">
+            <button class="mday-chip" type="button" data-val="Salsa de champiñones"><span class="ck">✓</span>Salsa de champiñones</button>
+            <button class="mday-chip" type="button" data-val="Salsa de camarón"><span class="ck">✓</span>Salsa de camarón</button>
+          </div>
+        </div>
+
+        <div class="mday-section">
+          <div class="mday-section-h">
+            <span class="ico">🥤</span><span>Jugo</span>
+            <span class="pick">elige uno</span>
+          </div>
+          <div class="mday-chips" data-group="jugo" data-opt="2">
+            <button class="mday-chip" type="button" data-val="Jugo de uva"><span class="ck">✓</span>Jugo de uva</button>
+            <button class="mday-chip" type="button" data-val="Jugo de naranja"><span class="ck">✓</span>Jugo de naranja</button>
+          </div>
+        </div>
+
+        <div class="mday-included-strip">
+          <span class="ico">🍲</span><span>Entrada del día incluida</span>
+        </div>
       </div>
 
-      <div class="mday-included-strip">
-        <span class="ico">🍲</span><span>Entrada del día incluida</span>
-      </div>
     </div>
 
     <div class="mday-footer">
@@ -3840,21 +4310,59 @@
     </div>
 
   </div>
+
+  <!-- ── Barra de resumen / CTA (sticky bottom) ── -->
+  <div class="mday-summary-bar" id="mday-sumbar">
+    <div class="mday-sum-meta">
+      <span class="mday-sum-label">Tu pedido <span class="mday-sum-progress" id="mday-sum-progress">0/4</span></span>
+      <span class="mday-sum-price" id="mday-sum-price">$12</span>
+    </div>
+    <button class="mday-cta" id="mday-cta-btn" type="button" onclick="window.mdayMenu && mdayMenu.share()" disabled>
+      <span class="cta-txt">Elige tus opciones ↑</span>
+      <span class="cta-arrow">›</span>
+    </button>
+  </div>
+</div>
+
+<!-- ── Modal "Mostrar al mesero" ── -->
+<div id="mday-share-modal">
+  <div class="mday-share-card">
+    <button class="mday-share-close" type="button" onclick="window.mdayMenu && mdayMenu.closeShare()" aria-label="Cerrar">✕</button>
+    <div class="mday-share-eyebrow">💗 Para tu mesero</div>
+    <div class="mday-share-title" id="mday-share-title">Opción 1 · $12</div>
+    <div class="mday-share-sub" id="mday-share-sub">Con Ensalada César + postre</div>
+    <ul class="mday-share-list" id="mday-share-list"></ul>
+    <div class="mday-share-foot">Muestra esta pantalla a tu mesero ✦</div>
+  </div>
 </div>
 
 <script>
 /* ════════════════════════════════════════
-   MÓDULO MENÚ DÍA DE LA MADRE
-   - Activa fondo temático hasta el 11 de mayo 2026 (00:00 Ecuador)
-   - Botón en home + overlay con 2 opciones
+   MÓDULO MENÚ DÍA DE LA MADRE (interactivo)
 ════════════════════════════════════════ */
 (function(){
   // Fin de la promoción: lunes 11 de mayo 2026, 00:00 hora Ecuador (UTC-5)
   var MDAY_END = new Date('2026-05-11T00:00:00-05:00').getTime();
 
-  function isActive(){
-    return Date.now() < MDAY_END;
-  }
+  // Configuración de cada opción
+  var OPTIONS = {
+    1: { name: 'Con Ensalada César', price: 12, sub: 'Con Ensalada César + postre 🍫', extras: ['Mini volcán de chocolate con helado', 'Entrada del día'] },
+    2: { name: 'Con Ensalada Rusa',  price: 10, sub: 'Con Ensalada Rusa',                extras: ['Entrada del día'] }
+  };
+  var GROUPS = ['acomp', 'proteina', 'salsa', 'jugo']; // los seleccionables (entrada es fija)
+  var GROUP_LABELS = {
+    entrada:  'Entrada',
+    acomp:    'Acompañamiento',
+    proteina: 'Proteína',
+    salsa:    'Salsa',
+    jugo:     'Jugo'
+  };
+
+  var currentOpt = 1;
+  // selección actual: { 1: {acomp:'Arroz blanco', proteina:'Pollo', ...}, 2: {...} }
+  var selections = { 1: {}, 2: {} };
+
+  function isActive(){ return Date.now() < MDAY_END; }
 
   function applyMode(){
     var home = document.getElementById('md-home');
@@ -3870,31 +4378,156 @@
       home.classList.remove('mday-mode');
       if (btn) btn.style.display = 'none';
       if (img) img.style.display = 'none';
-      // Si el overlay quedó abierto, ciérralo
       var ov = document.getElementById('mday-overlay');
       if (ov) ov.classList.remove('open');
+      var sb = document.getElementById('mday-sumbar');
+      if (sb) sb.classList.remove('show');
     }
   }
 
   function open(){
     if (!isActive()) return;
     var ov = document.getElementById('mday-overlay');
+    var sb = document.getElementById('mday-sumbar');
     if (ov) {
       ov.classList.add('open');
       ov.scrollTop = 0;
       document.body.style.overflow = 'hidden';
     }
+    if (sb) sb.classList.add('show');
+    // Reset al abrir
+    switchTab(1);
   }
 
   function close(){
     var ov = document.getElementById('mday-overlay');
+    var sb = document.getElementById('mday-sumbar');
     if (ov) ov.classList.remove('open');
+    if (sb) sb.classList.remove('show');
+    closeShare();
     document.body.style.overflow = '';
   }
 
+  function switchTab(opt){
+    currentOpt = opt;
+    // Tabs
+    document.querySelectorAll('.mday-tab').forEach(function(t){
+      t.classList.toggle('active', String(t.dataset.opt) === String(opt));
+    });
+    // Builds
+    document.querySelectorAll('.mday-build').forEach(function(b){
+      b.classList.toggle('active', String(b.dataset.opt) === String(opt));
+    });
+    // Scroll arriba dentro del overlay
+    var ov = document.getElementById('mday-overlay');
+    if (ov) ov.scrollTo({ top: 0, behavior: 'smooth' });
+    updateSummary();
+  }
+
+  function selectChip(chipEl){
+    if (chipEl.classList.contains('fixed') || chipEl.disabled) return;
+    var group = chipEl.parentElement.dataset.group;
+    var opt   = chipEl.parentElement.dataset.opt;
+    var val   = chipEl.dataset.val;
+    if (!group || !opt || !val) return;
+
+    // Deseleccionar otros del mismo grupo
+    chipEl.parentElement.querySelectorAll('.mday-chip').forEach(function(c){
+      if (!c.classList.contains('fixed')) c.classList.remove('selected');
+    });
+    chipEl.classList.add('selected');
+
+    if (!selections[opt]) selections[opt] = {};
+    selections[opt][group] = val;
+    updateSummary();
+  }
+
+  function updateSummary(){
+    var sel    = selections[currentOpt] || {};
+    var done   = 0;
+    GROUPS.forEach(function(g){ if (sel[g]) done++; });
+
+    var progEl  = document.getElementById('mday-sum-progress');
+    var priceEl = document.getElementById('mday-sum-price');
+    var btn     = document.getElementById('mday-cta-btn');
+    var ctaTxt  = btn ? btn.querySelector('.cta-txt') : null;
+
+    if (progEl)  progEl.textContent  = done + '/' + GROUPS.length;
+    if (priceEl) {
+      var newPrice = '$' + OPTIONS[currentOpt].price;
+      if (priceEl.textContent !== newPrice) {
+        priceEl.textContent = newPrice;
+        priceEl.classList.remove('flash');
+        // trigger reflow para reanimar
+        void priceEl.offsetWidth;
+        priceEl.classList.add('flash');
+      }
+    }
+
+    var allDone = (done === GROUPS.length);
+    if (btn) btn.disabled = !allDone;
+    if (ctaTxt) {
+      if (allDone)        ctaTxt.textContent = 'Mostrar al mesero ✦';
+      else if (done === 0) ctaTxt.textContent = 'Elige tus opciones ↑';
+      else                 ctaTxt.textContent = 'Te falta ' + (GROUPS.length - done) + ' selección' + (GROUPS.length - done > 1 ? 'es' : '');
+    }
+  }
+
+  function share(){
+    var sel  = selections[currentOpt] || {};
+    var conf = OPTIONS[currentOpt];
+
+    var titleEl = document.getElementById('mday-share-title');
+    var subEl   = document.getElementById('mday-share-sub');
+    var listEl  = document.getElementById('mday-share-list');
+    if (!listEl) return;
+
+    if (titleEl) titleEl.textContent = 'Opción ' + currentOpt + ' · $' + conf.price;
+    if (subEl)   subEl.textContent   = conf.sub;
+
+    var entrada = (currentOpt == 1) ? 'Ensalada César' : 'Ensalada Rusa';
+    var rows = [
+      { lbl: 'Entrada',         val: entrada,           gold: false },
+      { lbl: 'Acompañamiento',  val: sel.acomp || '—',  gold: sel.acomp === 'Arroz blanco' },
+      { lbl: 'Proteína',        val: sel.proteina || '—' },
+      { lbl: 'Salsa',           val: sel.salsa || '—' },
+      { lbl: 'Jugo',            val: sel.jugo || '—' }
+    ];
+    if (currentOpt == 1) {
+      rows.push({ lbl: 'Postre 🍫', val: 'Mini volcán + helado', gold: true });
+    }
+    rows.push({ lbl: 'Entrada del día', val: 'Incluida', gold: true });
+
+    listEl.innerHTML = rows.map(function(r){
+      return '<li><span class="lbl">' + r.lbl + '</span><span class="val' + (r.gold ? ' gold' : '') + '">' + r.val + '</span></li>';
+    }).join('');
+
+    var modal = document.getElementById('mday-share-modal');
+    if (modal) modal.classList.add('open');
+  }
+
+  function closeShare(){
+    var modal = document.getElementById('mday-share-modal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  // Delegación de eventos para chips
+  document.addEventListener('click', function(e){
+    var chip = e.target.closest('.mday-chip');
+    if (chip && chip.parentElement && chip.parentElement.classList.contains('mday-chips')) {
+      selectChip(chip);
+    }
+    // Cerrar modal share clicando fuera
+    if (e.target && e.target.id === 'mday-share-modal') closeShare();
+  });
+
   // Cerrar overlay con ESC
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') close();
+    if (e.key === 'Escape') {
+      var modal = document.getElementById('mday-share-modal');
+      if (modal && modal.classList.contains('open')) closeShare();
+      else close();
+    }
   });
 
   // Aplicar al cargar
@@ -3903,11 +4536,14 @@
   } else {
     applyMode();
   }
-
-  // Re-evaluar cada 5 min (por si el usuario deja la página abierta cruzando medianoche)
   setInterval(applyMode, 5 * 60 * 1000);
 
-  window.mdayMenu = { open: open, close: close, isActive: isActive };
+  window.mdayMenu = {
+    open: open, close: close,
+    switchTab: switchTab,
+    share: share, closeShare: closeShare,
+    isActive: isActive
+  };
 })();
 </script>
 
