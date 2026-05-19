@@ -3131,7 +3131,39 @@
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify(data)
       });
-    } catch(e) { console.log('Webhook:', e); }
+    } catch(e) { console.log('Webhook n8n:', e); }
+
+    // Envío directo al grupo "Montaña Dorada | Equipo" vía Evolution API
+    try {
+      var stars = function(n){ var v = Number(n)||0; return '⭐'.repeat(v) + '☆'.repeat(Math.max(0,5-v)); };
+      var avg = ((Number(data.calificacion_atencion||0) + Number(data.calificacion_comida||0)) / 2).toFixed(1);
+      var avgEmoji = avg >= 4.5 ? '🌟' : avg >= 4 ? '😊' : avg >= 3 ? '😐' : '⚠️';
+      var comentario = (data.comentario && String(data.comentario).trim())
+        ? '\n💬 *Comentario:*\n_' + String(data.comentario).trim() + '_'
+        : '\n💬 _(Sin comentario)_';
+      var msg =
+        avgEmoji + ' *Nueva encuesta — Montaña Dorada*\n' +
+        '━━━━━━━━━━━━━━━\n' +
+        '📅 ' + (data.fecha||'-') + '   ⏰ ' + (data.hora||'-') + '\n' +
+        '🪑 Mesa: *' + (data.mesa||'-') + '*\n' +
+        '👤 Mesera: *' + (data.mesera||'-') + '*\n\n' +
+        '🙋 *Atención:* ' + stars(data.calificacion_atencion) + '  (' + (data.calificacion_atencion||0) + '/5)\n' +
+        '🍽️ *Comida:*   ' + stars(data.calificacion_comida)   + '  (' + (data.calificacion_comida||0)   + '/5)\n' +
+        '📊 *Promedio:* ' + avg + '/5\n' +
+        '🔁 *¿Volvería?:* ' + (data.volveria||'-') +
+        comentario;
+      await fetch('https://md-chatbot-evolution-api.dtuoap.easypanel.host/message/sendText/chatbot_md', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':'429683C4C977415CAAFCCE10F7D57E11'
+        },
+        body: JSON.stringify({
+          number: '120363418972989523@g.us',
+          text: msg
+        })
+      });
+    } catch(e) { console.log('Evolution API:', e); }
   }
 
   function resetForm() { window.location.reload(); }
