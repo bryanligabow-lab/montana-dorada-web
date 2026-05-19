@@ -3126,13 +3126,6 @@
   }
 
   async function sendWebhook(data) {
-    try {
-      await fetch('https://md-chatbot-n8n.dtuoap.easypanel.host/webhook/montana-dorada', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(data)
-      });
-    } catch(e) { console.log('Webhook n8n:', e); }
-
     // Envío directo al grupo "Montaña Dorada | Equipo" vía Evolution API
     try {
       var stars = function(n){ var v = Number(n)||0; return '⭐'.repeat(v) + '☆'.repeat(Math.max(0,5-v)); };
