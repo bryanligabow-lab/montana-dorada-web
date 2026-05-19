@@ -1870,6 +1870,221 @@
   .home-btn:nth-child(2) { animation: fadeUp 0.6s ease 0.78s both; }
   .home-btn:nth-child(3) { animation: fadeUp 0.6s ease 0.91s both; }
 
+  /* ═══════════ JUEGOS — botón hyped ═══════════ */
+  .home-btn-juegos {
+    background: linear-gradient(135deg, rgba(40,12,60,0.92) 0%, rgba(60,12,40,0.92) 50%, rgba(20,8,30,0.92) 100%) !important;
+    border: 1.5px solid rgba(255, 220, 100, 0.55) !important;
+    overflow: visible !important;
+    animation: juegosPulseGlow 2.6s ease-in-out infinite,
+               fadeUp 0.6s ease 1.04s both;
+  }
+  @keyframes juegosPulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(232, 110, 230, 0.55), 0 6px 22px rgba(232, 110, 230, 0.18); }
+    50%      { box-shadow: 0 0 0 14px rgba(232, 110, 230, 0), 0 8px 38px rgba(232, 110, 230, 0.45); }
+  }
+  /* Borde gradiente animado (shine top) */
+  .home-btn-juegos::before {
+    background: linear-gradient(90deg, transparent 0%, rgba(232, 110, 230, 0.95) 25%, rgba(255, 220, 100, 0.95) 50%, rgba(232, 110, 230, 0.95) 75%, transparent 100%) !important;
+    background-size: 200% 100% !important;
+    height: 2px !important;
+    animation: juegosBorderShine 3s linear infinite;
+  }
+  .home-btn-juegos::after {
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 220, 100, 0.7) 50%, transparent 100%) !important;
+    background-size: 200% 100% !important;
+    height: 2px !important;
+    animation: juegosBorderShine 3s linear infinite reverse;
+  }
+  @keyframes juegosBorderShine {
+    0%   { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Badge "🎁 PREMIOS" */
+  .juegos-badge {
+    position: absolute;
+    top: -10px; right: 14px;
+    background: linear-gradient(135deg, #FF1744 0%, #FFD700 100%);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 800;
+    font-size: 9.5px;
+    letter-spacing: 1.8px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 16px rgba(255, 23, 68, 0.6), 0 0 20px rgba(255, 215, 0, 0.45);
+    animation: badgePulse 1.4s ease-in-out infinite;
+    z-index: 3;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  @keyframes badgePulse {
+    0%, 100% { transform: scale(1) rotate(-3deg); }
+    50%      { transform: scale(1.12) rotate(3deg); }
+  }
+
+  /* Sparkles flotando */
+  .juegos-sparkles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .juegos-sparkles .sp {
+    position: absolute;
+    font-size: 11px;
+    opacity: 0;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.7));
+  }
+  .juegos-sparkles .sp1 { top: 10px; left: 55px;  animation: sparkleFloat 2.4s ease-in-out 0s    infinite; }
+  .juegos-sparkles .sp2 { top: 28px; left: 30px;  animation: sparkleFloat 2.8s ease-in-out 0.6s  infinite; font-size: 10px; }
+  .juegos-sparkles .sp3 { bottom: 8px; right: 55px; animation: sparkleFloat 2.6s ease-in-out 1.0s infinite; }
+  .juegos-sparkles .sp4 { top: 14px; right: 75px; animation: sparkleFloat 3.0s ease-in-out 1.4s infinite; font-size: 9px; }
+  @keyframes sparkleFloat {
+    0%, 100% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+    40%      { opacity: 1; transform: translate(6px, -8px) scale(1.1); }
+    60%      { opacity: 1; transform: translate(8px, -10px) scale(1); }
+  }
+
+  /* Icono animado */
+  .juegos-icon {
+    filter: drop-shadow(0 0 12px rgba(232, 110, 230, 0.85)) !important;
+    animation: juegosIconWiggle 2.2s ease-in-out infinite;
+  }
+  @keyframes juegosIconWiggle {
+    0%, 100% { transform: translateY(0) rotate(-6deg) scale(1); }
+    50%      { transform: translateY(-3px) rotate(6deg) scale(1.08); }
+  }
+
+  /* Título con shimmer dorado-violeta */
+  .home-btn-juegos .home-btn-title {
+    background: linear-gradient(90deg, #FFD700 0%, #E879F9 35%, #FFD700 70%, #E879F9 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent !important;
+    animation: juegosTitleShine 3.5s linear infinite;
+    text-shadow: none !important;
+  }
+  @keyframes juegosTitleShine {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* Descripción con énfasis */
+  .home-btn-juegos .home-btn-desc {
+    color: rgba(255, 235, 220, 0.85) !important;
+    font-weight: 500;
+  }
+  .home-btn-juegos .home-btn-desc strong {
+    color: #FFD700;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+    font-weight: 700;
+  }
+
+  /* Flecha dorada animada */
+  .juegos-arrow {
+    color: #FFD700 !important;
+    animation: juegosArrowBob 1.3s ease-in-out infinite;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  }
+  @keyframes juegosArrowBob {
+    0%, 100% { transform: translateX(0); }
+    50%      { transform: translateX(5px); }
+  }
+  .home-btn-juegos:hover { transform: translateY(-3px) scale(1.015); }
+  .home-btn-juegos:hover .juegos-arrow { transform: translateX(8px) !important; }
+
+  /* ═══════════ TOOLTIP FLOTANTE — apunta al botón ═══════════ */
+  #juegos-teaser {
+    position: fixed;
+    z-index: 75;
+    bottom: 26%;
+    right: 14px;
+    background: linear-gradient(135deg, #5B1A8D 0%, #C0392B 100%);
+    border: 1.5px solid rgba(255, 215, 0, 0.7);
+    border-radius: 14px;
+    padding: 11px 36px 11px 13px;
+    box-shadow: 0 14px 38px rgba(91, 26, 141, 0.55), 0 0 26px rgba(255, 215, 0, 0.35);
+    display: none;
+    align-items: center;
+    gap: 10px;
+    max-width: 240px;
+    cursor: pointer;
+    transform: translateX(110%);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #juegos-teaser.show {
+    display: flex;
+    transform: translateX(0);
+  }
+  #juegos-teaser::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 30px;
+    width: 0; height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 10px solid #C0392B;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+  }
+  .juegos-teaser-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.7));
+    animation: teaserIconBob 1.2s ease-in-out infinite;
+  }
+  @keyframes teaserIconBob {
+    0%, 100% { transform: rotate(-8deg); }
+    50%      { transform: rotate(8deg) scale(1.08); }
+  }
+  .juegos-teaser-text {
+    display: flex; flex-direction: column;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .juegos-teaser-text strong {
+    font-family: 'Cinzel', serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #FFD700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+  .juegos-teaser-text span {
+    font-size: 10px;
+    color: rgba(255, 235, 220, 0.9);
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+  }
+  .juegos-teaser-close {
+    position: absolute;
+    top: 4px; right: 5px;
+    background: rgba(0,0,0,0.35);
+    border: none;
+    color: rgba(255,255,255,0.85);
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .juegos-teaser-close:hover {
+    background: rgba(0,0,0,0.6);
+    transform: rotate(90deg);
+  }
+  @media (max-width: 380px) {
+    #juegos-teaser { max-width: 200px; padding: 9px 32px 9px 11px; bottom: 24%; }
+    .juegos-teaser-text strong { font-size: 11.5px; }
+    .juegos-teaser-text span { font-size: 9.5px; }
+    .juegos-teaser-icon { font-size: 22px; }
+    .juegos-badge { font-size: 8.5px; padding: 4px 8px; }
+  }
+
   /* ── Social ── */
   .home-social {
     display: flex; gap: 22px; align-items: center;
@@ -2779,13 +2994,20 @@
         <span class="home-btn-arrow">›</span>
       </button>
 
-      <button class="home-btn" onclick="window.mgModule && mgModule.open()">
-        <span class="home-btn-icon">🎮</span>
+      <button class="home-btn home-btn-juegos" id="btn-juegos-home" onclick="window.mgModule && mgModule.open(); var t=document.getElementById('juegos-teaser'); if(t) t.classList.remove('show');">
+        <span class="juegos-badge">🎁 PREMIOS</span>
+        <span class="juegos-sparkles">
+          <span class="sp sp1">✨</span>
+          <span class="sp sp2">⭐</span>
+          <span class="sp sp3">✨</span>
+          <span class="sp sp4">💫</span>
+        </span>
+        <span class="home-btn-icon juegos-icon">🎮</span>
         <span class="home-btn-text">
           <span class="home-btn-title">Juegos</span>
-          <span class="home-btn-desc">Diviértete mientras esperas tu pedido</span>
+          <span class="home-btn-desc">🎁 Gira la ruleta y gana <strong>premios reales</strong></span>
         </span>
-        <span class="home-btn-arrow">›</span>
+        <span class="home-btn-arrow juegos-arrow">›</span>
       </button>
 
     </div>
@@ -2804,6 +3026,40 @@
 
   </div>
 </div>
+
+<!-- ═══════════════════ TEASER FLOTANTE JUEGOS ═══════════════════ -->
+<div id="juegos-teaser" onclick="if(event.target.closest('.juegos-teaser-close'))return; window.mgModule && mgModule.open(); this.classList.remove('show'); try{sessionStorage.setItem('juegosTeaserSeen','1');}catch(e){}">
+  <button class="juegos-teaser-close" type="button" onclick="event.stopPropagation(); document.getElementById('juegos-teaser').classList.remove('show'); try{sessionStorage.setItem('juegosTeaserSeen','1');}catch(e){}" aria-label="Cerrar">✕</button>
+  <span class="juegos-teaser-icon">🎁</span>
+  <div class="juegos-teaser-text">
+    <strong>¡Premios reales!</strong>
+    <span>Gira la ruleta · juega y gana</span>
+  </div>
+</div>
+<script>
+(function(){
+  // Mostrar teaser 4.5s después de cargar, solo si no se ha visto en esta sesión
+  function showJuegosTeaser(){
+    try { if (sessionStorage.getItem('juegosTeaserSeen')) return; } catch(e){}
+    var t = document.getElementById('juegos-teaser');
+    var home = document.getElementById('md-home');
+    // Solo si el home está visible (no en pantalla de form/success/etc)
+    if (!t || !home || home.style.display === 'none') return;
+    t.classList.add('show');
+    // Auto-ocultar después de 8s si el usuario no interactúa
+    setTimeout(function(){
+      if (t.classList.contains('show')) {
+        t.classList.remove('show');
+      }
+    }, 8000);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(showJuegosTeaser, 4500); });
+  } else {
+    setTimeout(showJuegosTeaser, 4500);
+  }
+})();
+</script>
 
 <!-- ═══════════════════ FORMULARIO ═══════════════════ -->
 <div id="formSection" style="display:none">
