@@ -2833,7 +2833,7 @@
   }
 
   /* ════════════════════════════════════════
-     MODO DÍA DEL PADRE — motion graphics
+     MODO DÍA DEL PADRE — rediseño elegante
      Activo hasta el 23 de junio 2026 00:00 ET
   ════════════════════════════════════════ */
   .fday-anim-layer {
@@ -2842,177 +2842,173 @@
     z-index: 3;
     overflow: hidden;
   }
-  /* Si el JS detecta que la promo ya expiró, agrega .fday-expired y se oculta */
   #md-home.fday-expired .fday-anim-layer { display: none; }
-  /* El banner debe poder recibir clicks por encima del contenido */
-  .fday-banner { pointer-events: auto; }
 
-  .fday-warm-overlay {
+  /* Imagen de fondo (AI) con Ken Burns suave */
+  .fday-hero-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+    animation: fdayKen 22s ease-in-out infinite alternate;
+  }
+  @keyframes fdayKen {
+    from { transform: scale(1) translate(0,0); }
+    to   { transform: scale(1.10) translate(-2%, -1%); }
+  }
+  /* Veil para que el logo y los botones se sigan leyendo */
+  .fday-veil {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse at 50% 115%, rgba(255,135,40,0.28), transparent 58%),
-      radial-gradient(ellipse at 50% -10%, rgba(40,14,5,0.55), transparent 60%),
-      linear-gradient(180deg, rgba(0,0,0,0.18), rgba(20,8,2,0.30));
+      radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.88) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.30) 35%, rgba(0,0,0,0.85) 100%);
+  }
+  /* Glow cálido lateral muy sutil */
+  .fday-warm-glow {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 25%, rgba(255,150,50,0.18), transparent 45%),
+      radial-gradient(ellipse at 85% 75%, rgba(255,120,30,0.16), transparent 45%);
     mix-blend-mode: screen;
     animation: fdayWarmPulse 9s ease-in-out infinite;
   }
   @keyframes fdayWarmPulse {
-    0%,100% { opacity: 0.85; }
+    0%,100% { opacity: 0.7; }
     50%     { opacity: 1; }
   }
 
-  .fday-vignette {
-    position: absolute; inset: 0;
-    box-shadow: inset 0 0 200px 40px rgba(60,20,5,0.70);
-    pointer-events: none;
-  }
-
-  .fday-banner {
+  /* ── TARJETA ELEGANTE ── */
+  .fday-card {
     position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    top: calc(env(safe-area-inset-top, 0px) + 16px);
     left: 50%; transform: translateX(-50%);
-    display: flex; align-items: center; gap: 9px;
-    background: linear-gradient(135deg, rgba(40,18,4,0.92), rgba(70,30,10,0.92));
-    border: 1px solid rgba(212,185,110,0.55);
-    border-radius: 999px;
-    padding: 9px 20px;
-    font-family: 'Cinzel', Georgia, serif;
-    font-size: 12px; letter-spacing: 0.10em;
-    color: #F5D78A; text-transform: uppercase;
-    box-shadow: 0 4px 22px rgba(0,0,0,0.5), 0 0 28px rgba(212,185,110,0.18);
+    display: flex; align-items: center; gap: 14px;
+    background: linear-gradient(135deg, rgba(18,8,2,0.94), rgba(40,18,6,0.94));
+    border: 1px solid rgba(212,185,110,0.45);
+    border-radius: 18px;
+    padding: 10px 18px 10px 10px;
+    box-shadow: 0 10px 32px rgba(0,0,0,0.6), 0 0 28px rgba(212,185,110,0.18);
+    pointer-events: auto;
+    max-width: calc(100% - 32px);
     z-index: 6;
-    animation: fdayBannerIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both,
-               fdayBannerGlow 4s ease-in-out 1s infinite;
-    white-space: nowrap;
+    animation: fdayCardIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s both,
+               fdayCardGlow 5s ease-in-out 2s infinite;
+    cursor: pointer;
+    transition: transform 0.3s ease;
   }
-  .fday-banner-icon { font-size: 16px; filter: drop-shadow(0 0 6px rgba(255,150,50,0.6)); }
-  .fday-banner b { color: #FFF1B8; font-weight: 700; }
-  @keyframes fdayBannerIn {
+  .fday-card:hover { transform: translateX(-50%) translateY(-2px); }
+  @keyframes fdayCardIn {
     from { opacity: 0; transform: translate(-50%, -22px); }
-    to   { opacity: 1; transform: translate(-50%, 0); }
+    to   { opacity: 1; transform: translate(-50%, 0);     }
   }
-  @keyframes fdayBannerGlow {
-    0%,100% { box-shadow: 0 4px 22px rgba(0,0,0,0.5), 0 0 22px rgba(212,185,110,0.15); }
-    50%     { box-shadow: 0 4px 22px rgba(0,0,0,0.5), 0 0 38px rgba(255,170,60,0.40); }
+  @keyframes fdayCardGlow {
+    0%,100% { box-shadow: 0 10px 32px rgba(0,0,0,0.6), 0 0 22px rgba(212,185,110,0.15); }
+    50%     { box-shadow: 0 10px 32px rgba(0,0,0,0.6), 0 0 42px rgba(255,170,60,0.45);  }
   }
-
-  /* Brasas que suben */
-  .fday-embers { position: absolute; inset: 0; }
-  .fday-ember {
-    position: absolute; bottom: -10px;
-    width: 6px; height: 6px; border-radius: 50%;
-    background: radial-gradient(circle, #FFB85C 0%, #FF7A1F 50%, transparent 70%);
-    filter: blur(0.5px);
-    opacity: 0;
-    animation: fdayEmber 10s linear infinite;
+  .fday-card-thumb {
+    width: 58px; height: 58px;
+    border-radius: 12px;
+    overflow: hidden; flex-shrink: 0;
+    border: 1px solid rgba(212,185,110,0.5);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    background: #2a1408;
   }
-  .fday-ember.e1  { left:  6%; width:5px; height:5px; animation-duration:11s; animation-delay:0s; }
-  .fday-ember.e2  { left: 14%; width:7px; height:7px; animation-duration: 9s; animation-delay:1.2s; }
-  .fday-ember.e3  { left: 22%; width:4px; height:4px; animation-duration:13s; animation-delay:2.6s; }
-  .fday-ember.e4  { left: 32%; width:6px; height:6px; animation-duration:10s; animation-delay:0.5s; }
-  .fday-ember.e5  { left: 42%; width:5px; height:5px; animation-duration:12s; animation-delay:3.5s; }
-  .fday-ember.e6  { left: 52%; width:7px; height:7px; animation-duration: 8s; animation-delay:1.8s; }
-  .fday-ember.e7  { left: 62%; width:4px; height:4px; animation-duration:14s; animation-delay:4.0s; }
-  .fday-ember.e8  { left: 72%; width:6px; height:6px; animation-duration:10s; animation-delay:2.0s; }
-  .fday-ember.e9  { left: 80%; width:5px; height:5px; animation-duration: 9s; animation-delay:0.8s; }
-  .fday-ember.e10 { left: 88%; width:7px; height:7px; animation-duration:11s; animation-delay:3.0s; }
-  .fday-ember.e11 { left: 94%; width:4px; height:4px; animation-duration:13s; animation-delay:1.5s; }
-  @keyframes fdayEmber {
-    0%   { transform: translateY(0) scale(0.4); opacity: 0; }
-    15%  { opacity: 1; }
-    60%  { opacity: 0.8; }
-    100% { transform: translateY(-110vh) translateX(20px) scale(1.1); opacity: 0; }
+  .fday-card-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
   }
-
-  /* Bokeh dorado */
-  .fday-bokeh { position: absolute; inset: 0; }
-  .fday-bokeh-dot {
-    position: absolute; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,200,90,0.55) 0%, rgba(255,160,40,0.18) 50%, transparent 75%);
-    filter: blur(8px);
-    animation: fdayBokeh 16s ease-in-out infinite;
+  .fday-card-text {
+    display: flex; flex-direction: column; gap: 1px;
+    min-width: 0;
   }
-  .fday-bokeh-dot.b1 { width:110px; height:110px; top:18%; left: 8%; animation-delay:0s; }
-  .fday-bokeh-dot.b2 { width: 80px; height: 80px; top:56%; left:78%; animation-delay:3s; }
-  .fday-bokeh-dot.b3 { width:140px; height:140px; top:72%; left:18%; animation-delay:6s; }
-  .fday-bokeh-dot.b4 { width: 90px; height: 90px; top:28%; left:68%; animation-delay:9s; }
-  @keyframes fdayBokeh {
-    0%,100% { transform: translateY(0) scale(1);    opacity: 0.55; }
-    50%     { transform: translateY(-30px) scale(1.12); opacity: 0.90; }
+  .fday-card-eyebrow {
+    font-family: Arial, sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.20em;
+    color: #D4B96E;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 5px;
   }
-
-  /* Glints titilando */
-  .fday-glints { position: absolute; inset: 0; }
-  .fday-glint {
-    position: absolute; width: 18px; height: 18px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,235,150,1) 0%, rgba(255,200,90,0.6) 30%, transparent 70%);
-    filter: blur(0.5px);
-    opacity: 0;
-    animation: fdayTwinkle 4s ease-in-out infinite;
+  .fday-card-title {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 18px;
+    color: #FFD685;
+    font-weight: 700;
+    line-height: 1.05;
+    margin: 1px 0;
+    letter-spacing: 0.02em;
   }
-  .fday-glint.g1 { top:14%; left:12%; animation-delay:0s; }
-  .fday-glint.g2 { top:22%; right:16%; animation-delay:1.2s; }
-  .fday-glint.g3 { top:60%; left:8%;  animation-delay:2.4s; }
-  .fday-glint.g4 { top:48%; right:12%; animation-delay:0.6s; }
-  .fday-glint.g5 { bottom:26%; left:60%; animation-delay:3.1s; }
-  .fday-glint.g6 { bottom:16%; right:24%; animation-delay:1.8s; }
-  @keyframes fdayTwinkle {
-    0%,100% { opacity: 0;    transform: scale(0.4); }
-    50%     { opacity: 0.95; transform: scale(1); }
+  .fday-card-sub {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 11.5px;
+    color: #d8c8b0;
+    margin: 0;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    max-width: 220px;
   }
 
-  /* Sweep dorado diagonal */
-  .fday-sweep {
-    position: absolute; top: 0; left: -50%;
-    width: 60%; height: 200%;
-    background: linear-gradient(115deg,
-      transparent 30%,
-      rgba(255,210,120,0.10) 45%,
-      rgba(255,225,150,0.22) 50%,
-      rgba(255,210,120,0.10) 55%,
-      transparent 70%);
-    transform: rotate(8deg);
-    animation: fdaySweep 9s ease-in-out infinite;
-    mix-blend-mode: screen;
-  }
-  @keyframes fdaySweep {
-    0%   { transform: translateX(-30%) rotate(8deg); opacity: 0; }
-    20%  { opacity: 1; }
-    60%  { opacity: 1; }
-    100% { transform: translateX(220%) rotate(8deg); opacity: 0; }
-  }
-
-  /* Iconos flotantes */
-  .fday-icons { position: absolute; inset: 0; }
-  .fday-icon {
+  /* ── Sello / medalla 21 ── */
+  .fday-seal {
     position: absolute;
-    filter: drop-shadow(0 4px 12px rgba(255,140,40,0.45));
-    animation: fdayIconFloat 12s ease-in-out infinite;
+    top: calc(env(safe-area-inset-top, 0px) + 22px);
+    right: 18px;
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, #FFE48E 0%, #C5A55A 45%, #7A5B22 100%);
+    color: #2a1408;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Cinzel', Georgia, serif;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.55), 0 0 24px rgba(255,180,80,0.35), inset 0 -3px 8px rgba(0,0,0,0.25);
+    border: 2px solid rgba(255,230,160,0.7);
+    z-index: 6;
+    pointer-events: auto;
+    animation: fdaySealSpin 8s ease-in-out infinite, fdaySealIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.45s both;
   }
-  .fday-icon.i1 { top: 10%;    left:  6%; font-size: 30px; animation-delay: 0s;  }
-  .fday-icon.i2 { top: 18%;    right: 8%; font-size: 26px; animation-delay: 1.5s;}
-  .fday-icon.i3 { top: 36%;    left:  4%; font-size: 24px; animation-delay: 3.0s;}
-  .fday-icon.i4 { top: 42%;    right: 6%; font-size: 28px; animation-delay: 4.5s;}
-  .fday-icon.i5 { bottom: 32%; left:  7%; font-size: 26px; animation-delay: 2.2s;}
-  .fday-icon.i6 { bottom: 22%; right:10%; font-size: 30px; animation-delay: 5.5s;}
-  .fday-icon.i7 { bottom: 42%; right: 4%; font-size: 22px; animation-delay: 6.5s;}
-  .fday-icon.i8 { top: 55%;    left:  3%; font-size: 22px; animation-delay: 7.5s;}
-  @keyframes fdayIconFloat {
-    0%,100% { transform: translateY(0)    rotate(-3deg); opacity: 0.85; }
-    50%     { transform: translateY(-14px) rotate( 3deg); opacity: 1;    }
+  .fday-seal-day {
+    font-size: 22px; font-weight: 700; line-height: 1;
+  }
+  .fday-seal-mes {
+    font-size: 7.5px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 2px; font-weight: 700;
+  }
+  .fday-seal-arc {
+    position: absolute; top: -4px; left: -4px;
+    width: calc(100% + 8px); height: calc(100% + 8px);
+    border: 1px dashed rgba(255,210,130,0.5);
+    border-radius: 50%;
+    animation: fdaySealArc 14s linear infinite;
+  }
+  @keyframes fdaySealSpin {
+    0%,100% { transform: rotate(-4deg); }
+    50%     { transform: rotate(4deg);  }
+  }
+  @keyframes fdaySealArc { to { transform: rotate(360deg); } }
+  @keyframes fdaySealIn {
+    from { opacity: 0; transform: scale(0.4) rotate(-30deg); }
+    to   { opacity: 1; transform: scale(1) rotate(-4deg);    }
   }
 
   @media (max-width: 480px) {
-    .fday-banner { font-size: 10px; padding: 7px 14px; letter-spacing: 0.08em; gap: 6px; }
-    .fday-icon.i1, .fday-icon.i2 { font-size: 22px; }
-    .fday-icon.i3, .fday-icon.i4, .fday-icon.i5, .fday-icon.i6 { font-size: 20px; }
-    .fday-icon.i7, .fday-icon.i8 { font-size: 18px; }
-    .fday-bokeh-dot.b1 { width: 70px; height: 70px; }
-    .fday-bokeh-dot.b3 { width: 90px; height: 90px; }
+    .fday-card { gap: 10px; padding: 8px 14px 8px 8px; max-width: calc(100% - 100px); }
+    .fday-card-thumb { width: 48px; height: 48px; border-radius: 10px; }
+    .fday-card-title { font-size: 15px; }
+    .fday-card-sub { font-size: 10.5px; max-width: 150px; }
+    .fday-card-eyebrow { font-size: 8.5px; }
+    .fday-seal { width: 56px; height: 56px; right: 12px; top: calc(env(safe-area-inset-top, 0px) + 18px); }
+    .fday-seal-day { font-size: 18px; }
+    .fday-seal-mes { font-size: 6.5px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .fday-ember, .fday-bokeh-dot, .fday-glint, .fday-sweep, .fday-icon,
-    .fday-warm-overlay, .fday-banner { animation: none !important; }
+    .fday-hero-img, .fday-warm-glow, .fday-card, .fday-seal, .fday-seal-arc {
+      animation: none !important;
+    }
   }
 </style>
 </head>
@@ -3125,43 +3121,30 @@
     </div>
   </div>
 
-  <!-- ── Modo Día del Padre · motion graphics (activado por JS hasta 23-jun-2026) ── -->
-  <div class="fday-anim-layer" aria-hidden="true">
-    <div class="fday-warm-overlay"></div>
-    <div class="fday-sweep"></div>
-    <div class="fday-bokeh">
-      <span class="fday-bokeh-dot b1"></span>
-      <span class="fday-bokeh-dot b2"></span>
-      <span class="fday-bokeh-dot b3"></span>
-      <span class="fday-bokeh-dot b4"></span>
+  <!-- ── Modo Día del Padre · imagen + tarjeta elegante ── -->
+  <div class="fday-anim-layer" aria-hidden="false">
+    <img class="fday-hero-img"
+         src="https://image.pollinations.ai/prompt/cinematic%20rustic%20grilled%20meat%20parrilla%20asado%20with%20flames%20and%20smoke%20warm%20golden%20amber%20lighting%20dark%20moody%20restaurant%20background%20professional%20food%20photography%20ultra%20detailed?width=1600&height=1000&seed=2026&nologo=true&model=flux"
+         alt="" loading="lazy">
+    <div class="fday-veil"></div>
+    <div class="fday-warm-glow"></div>
+
+    <div class="fday-card" role="button" tabindex="0">
+      <div class="fday-card-thumb">
+        <img src="https://image.pollinations.ai/prompt/close%20up%20juicy%20grilled%20steak%20with%20grill%20marks%20warm%20golden%20lighting%20food%20photography%20rustic?width=180&height=180&seed=1881&nologo=true&model=flux"
+             alt="Asado Día del Padre" loading="lazy">
+      </div>
+      <div class="fday-card-text">
+        <span class="fday-card-eyebrow">🥩 Domingo 21 · Junio</span>
+        <h3 class="fday-card-title">Día del Padre</h3>
+        <p class="fday-card-sub">Celebra al papá más bravo con un asado de leyenda</p>
+      </div>
     </div>
-    <div class="fday-embers">
-      <span class="fday-ember e1"></span><span class="fday-ember e2"></span>
-      <span class="fday-ember e3"></span><span class="fday-ember e4"></span>
-      <span class="fday-ember e5"></span><span class="fday-ember e6"></span>
-      <span class="fday-ember e7"></span><span class="fday-ember e8"></span>
-      <span class="fday-ember e9"></span><span class="fday-ember e10"></span>
-      <span class="fday-ember e11"></span>
-    </div>
-    <div class="fday-glints">
-      <span class="fday-glint g1"></span><span class="fday-glint g2"></span>
-      <span class="fday-glint g3"></span><span class="fday-glint g4"></span>
-      <span class="fday-glint g5"></span><span class="fday-glint g6"></span>
-    </div>
-    <div class="fday-icons">
-      <span class="fday-icon i1">🥩</span>
-      <span class="fday-icon i2">🔥</span>
-      <span class="fday-icon i3">🥃</span>
-      <span class="fday-icon i4">🎩</span>
-      <span class="fday-icon i5">⭐</span>
-      <span class="fday-icon i6">🍖</span>
-      <span class="fday-icon i7">👔</span>
-      <span class="fday-icon i8">🪵</span>
-    </div>
-    <div class="fday-vignette"></div>
-    <div class="fday-banner">
-      <span class="fday-banner-icon">🥩🔥</span>
-      <span>Para el <b>papá más bravo</b> · Hasta el 22 de junio</span>
+
+    <div class="fday-seal">
+      <span class="fday-seal-arc"></span>
+      <span class="fday-seal-day">21</span>
+      <span class="fday-seal-mes">JUN</span>
     </div>
   </div>
 
