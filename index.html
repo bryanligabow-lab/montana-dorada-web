@@ -2920,6 +2920,50 @@
     .fday-headline-text, .fday-headline-emoji, .fday-headline { animation: none !important; }
   }
 
+  /* ── Pill "Toca para activar saludo" ── */
+  .fday-tap-pill {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+    left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, rgba(40,18,6,0.95), rgba(60,28,8,0.95));
+    border: 1px solid rgba(212,185,110,0.55);
+    color: #FFD685;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(255,180,80,0.25);
+    z-index: 999;
+    pointer-events: none;
+    animation: fdayTapIn 0.7s cubic-bezier(0.16,1,0.3,1) 1.5s both,
+               fdayTapPulse 2s ease-in-out 2.2s infinite;
+  }
+  .fday-tap-pill.played {
+    animation: fdayTapOut 0.5s ease both;
+  }
+  .fday-tap-pill .fday-tap-icon {
+    font-size: 14px;
+    animation: fdayTapBob 1.4s ease-in-out infinite;
+  }
+  #md-home.fday-expired .fday-tap-pill { display: none; }
+  @keyframes fdayTapIn {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+  @keyframes fdayTapPulse {
+    0%,100% { box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(255,180,80,0.25); }
+    50%     { box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 32px rgba(255,180,80,0.55); }
+  }
+  @keyframes fdayTapBob {
+    0%,100% { transform: translateY(0) scale(1); }
+    50%     { transform: translateY(-2px) scale(1.1); }
+  }
+  @keyframes fdayTapOut {
+    to { opacity: 0; transform: translate(-50%, 30px); pointer-events: none; }
+  }
+
   /* Imagen de fondo (poster Higgsfield IA) con Ken Burns suave */
   .fday-hero-img {
     position: absolute; inset: 0;
@@ -3201,9 +3245,9 @@
     <img class="fday-hero-img"
          src="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211830_fbbd8f58-bd8b-491a-afcc-6b55ba708dd1_min.webp"
          alt="" loading="eager" decoding="async">
-    <video class="fday-hero-video" autoplay muted loop playsinline preload="auto"
+    <video class="fday-hero-video" id="fday-hero-video" autoplay muted loop playsinline preload="auto"
            poster="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211830_fbbd8f58-bd8b-491a-afcc-6b55ba708dd1_min.webp">
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211911_0fbf7bd1-06f3-4109-8a7c-66028298cf8a.mp4" type="video/mp4">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_213755_883125ea-09f5-4a16-b2ef-ea47883cee9c.mp4" type="video/mp4">
     </video>
     <div class="fday-veil"></div>
   </div>
@@ -3227,6 +3271,12 @@
       <span class="fday-seal-arc"></span>
       <span class="fday-seal-day">21</span>
       <span class="fday-seal-mes">JUN</span>
+    </div>
+
+    <!-- Pill flotante que invita a tocar para activar el audio -->
+    <div class="fday-tap-pill" id="fday-tap-pill">
+      <span class="fday-tap-icon">🔊</span>
+      <span>Toca para escuchar el saludo</span>
     </div>
   </div>
 
@@ -6351,50 +6401,37 @@
     }
   }
 
-  /* ── Saludo de voz "¡Feliz día papá!" en el primer toque ── */
-  var fdaySpoken = false;
-  function fdayPickSpanishFemaleVoice(){
+  /* ── Saludo cinemático: desmutear el video real al primer toque ──
+     El video tiene audio baked-in (voz "¡Feliz día papá!" + ambient grill)
+     generado con veo3_1. Los navegadores bloquean autoplay con sonido,
+     así que arrancamos muteado y desmuteamos en la primera interacción. */
+  var fdayUnmuted = false;
+  function fdayUnmuteHero(){
+    if (fdayUnmuted || !isActive()) return;
+    var v = document.getElementById('fday-hero-video');
+    if (!v) return;
     try {
-      var voices = (window.speechSynthesis && speechSynthesis.getVoices()) || [];
-      var preferred = /paulina|monica|sofia|isabela|laura|helena|maria|esperanza|lupe|ximena|google.*español|microsoft.*sabina|microsoft.*helena|microsoft.*laura/i;
-      return voices.find(function(v){ return /^es/i.test(v.lang) && preferred.test(v.name); })
-          || voices.find(function(v){ return /^es/i.test(v.lang) && /female|mujer/i.test(v.name); })
-          || voices.find(function(v){ return /^es/i.test(v.lang); })
-          || null;
-    } catch(e){ return null; }
-  }
-  function fdaySpeakGreeting(){
-    if (fdaySpoken || !isActive()) return;
-    if (!('speechSynthesis' in window)) return;
-    try {
-      speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance('¡Feliz día, papá! Bienvenidos a Montaña Dorada.');
-      u.lang = 'es-ES';
-      u.rate = 0.95;
-      u.pitch = 1.1;
-      u.volume = 1;
-      var v = fdayPickSpanishFemaleVoice();
-      if (v) u.voice = v;
-      speechSynthesis.speak(u);
-      fdaySpoken = true;
+      v.muted = false;
+      v.volume = 1;
+      v.currentTime = 0;
+      var p = v.play();
+      if (p && p.catch) p.catch(function(){});
+      fdayUnmuted = true;
+      var pill = document.getElementById('fday-tap-pill');
+      if (pill) pill.classList.add('played');
     } catch(e){}
   }
-  function fdayArmGreeting(){
+  function fdayArmUnmute(){
     var opts = { once: true, passive: true };
-    document.addEventListener('click', fdaySpeakGreeting, opts);
-    document.addEventListener('touchstart', fdaySpeakGreeting, opts);
-    document.addEventListener('keydown', fdaySpeakGreeting, opts);
+    document.addEventListener('click', fdayUnmuteHero, opts);
+    document.addEventListener('touchstart', fdayUnmuteHero, opts);
+    document.addEventListener('keydown', fdayUnmuteHero, opts);
   }
 
   function init(){
     apply();
     setInterval(apply, 60 * 1000);
-    if (isActive()) fdayArmGreeting();
-    // Pre-cargar voces
-    if ('speechSynthesis' in window) {
-      try { speechSynthesis.getVoices(); } catch(e){}
-      window.speechSynthesis.onvoiceschanged = function(){};
-    }
+    if (isActive()) fdayArmUnmute();
   }
 
   if (document.readyState === 'loading') {
