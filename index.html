@@ -2850,7 +2850,75 @@
     z-index: 5;
   }
   #md-home.fday-expired .fday-anim-layer,
-  #md-home.fday-expired .fday-front-layer { display: none; }
+  #md-home.fday-expired .fday-front-layer,
+  #md-home.fday-expired .fday-headline { display: none; }
+
+  /* ── HEADLINE "¡Feliz Día del Padre!" ── */
+  .fday-headline {
+    text-align: center;
+    margin: 4px auto 14px;
+    padding: 0 18px;
+    position: relative;
+    animation: fdayHeadIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.55s both;
+  }
+  .fday-headline-text {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    background: linear-gradient(90deg,
+      #8a6e3a 0%, #C5A55A 25%, #FFE48E 45%, #FFFFFF 50%,
+      #FFE48E 55%, #C5A55A 75%, #8a6e3a 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: fdayShine 5s linear infinite;
+    text-shadow: 0 0 28px rgba(255,200,100,0.15);
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.55));
+  }
+  @keyframes fdayShine {
+    from { background-position: 250% 0; }
+    to   { background-position: -250% 0; }
+  }
+  @keyframes fdayHeadIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .fday-headline-deco {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: #D4B96E;
+    text-transform: uppercase;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+  .fday-headline-deco-sep {
+    color: rgba(212,185,110,0.6);
+    font-size: 9px;
+  }
+  .fday-headline-emoji {
+    font-size: 14px;
+    filter: drop-shadow(0 0 6px rgba(255,140,40,0.4));
+    animation: fdayBob 3s ease-in-out infinite;
+  }
+  .fday-headline-emoji:nth-child(odd) { animation-delay: 0.4s; }
+  @keyframes fdayBob {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-3px); }
+  }
+  @media (max-width: 480px) {
+    .fday-headline-text { font-size: 21px; }
+    .fday-headline-deco { font-size: 9.5px; letter-spacing: 0.18em; gap: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fday-headline-text, .fday-headline-emoji, .fday-headline { animation: none !important; }
+  }
 
   /* Imagen de fondo (poster Higgsfield IA) con Ken Burns suave */
   .fday-hero-img {
@@ -3174,6 +3242,18 @@
       <div class="home-sep-line"></div>
       <div class="home-sep-diamond"></div>
       <div class="home-sep-line"></div>
+    </div>
+
+    <!-- ── Headline Día del Padre (solo visible en modo activo) ── -->
+    <div class="fday-headline" id="fday-headline">
+      <h2 class="fday-headline-text">¡Feliz Día del Padre!</h2>
+      <div class="fday-headline-deco">
+        <span class="fday-headline-emoji">🥩</span>
+        <span>Domingo 21 Junio</span>
+        <span class="fday-headline-deco-sep">✦</span>
+        <span>Reserva ya</span>
+        <span class="fday-headline-emoji">🍷</span>
+      </div>
     </div>
 
     <div class="home-btns">
@@ -6271,9 +6351,50 @@
     }
   }
 
+  /* ── Saludo de voz "¡Feliz día papá!" en el primer toque ── */
+  var fdaySpoken = false;
+  function fdayPickSpanishFemaleVoice(){
+    try {
+      var voices = (window.speechSynthesis && speechSynthesis.getVoices()) || [];
+      var preferred = /paulina|monica|sofia|isabela|laura|helena|maria|esperanza|lupe|ximena|google.*español|microsoft.*sabina|microsoft.*helena|microsoft.*laura/i;
+      return voices.find(function(v){ return /^es/i.test(v.lang) && preferred.test(v.name); })
+          || voices.find(function(v){ return /^es/i.test(v.lang) && /female|mujer/i.test(v.name); })
+          || voices.find(function(v){ return /^es/i.test(v.lang); })
+          || null;
+    } catch(e){ return null; }
+  }
+  function fdaySpeakGreeting(){
+    if (fdaySpoken || !isActive()) return;
+    if (!('speechSynthesis' in window)) return;
+    try {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance('¡Feliz día, papá! Bienvenidos a Montaña Dorada.');
+      u.lang = 'es-ES';
+      u.rate = 0.95;
+      u.pitch = 1.1;
+      u.volume = 1;
+      var v = fdayPickSpanishFemaleVoice();
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+      fdaySpoken = true;
+    } catch(e){}
+  }
+  function fdayArmGreeting(){
+    var opts = { once: true, passive: true };
+    document.addEventListener('click', fdaySpeakGreeting, opts);
+    document.addEventListener('touchstart', fdaySpeakGreeting, opts);
+    document.addEventListener('keydown', fdaySpeakGreeting, opts);
+  }
+
   function init(){
     apply();
     setInterval(apply, 60 * 1000);
+    if (isActive()) fdayArmGreeting();
+    // Pre-cargar voces
+    if ('speechSynthesis' in window) {
+      try { speechSynthesis.getVoices(); } catch(e){}
+      window.speechSynthesis.onvoiceschanged = function(){};
+    }
   }
 
   if (document.readyState === 'loading') {
