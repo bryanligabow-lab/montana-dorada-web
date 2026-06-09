@@ -557,6 +557,42 @@
   }
   #md-preloader.hide { opacity:0; visibility:hidden; }
 
+  /* ── Tagline Día del Padre dentro del preloader ── */
+  .pre-fday { display: none; margin-top: 18px; text-align: center; opacity: 0; }
+  #md-preloader.fday-themed .pre-fday {
+    display: block;
+    animation: preFdayIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.9s both;
+  }
+  @keyframes preFdayIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .pre-fday-title {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #8a6e3a 0%, #FFE48E 45%, #FFFFFF 50%, #FFE48E 55%, #8a6e3a 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: fdayShine 5s linear infinite;
+    margin-bottom: 4px;
+  }
+  .pre-fday-date {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: #D4B96E;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  @media (max-width: 480px) {
+    .pre-fday-title { font-size: 17px; }
+    .pre-fday-date  { font-size: 10px; letter-spacing: 0.20em; }
+  }
+
   .pre-logo-wrap {
     width:140px; height:140px; position:relative;
     animation:preLogoIn 1s cubic-bezier(0.16,1,0.3,1) forwards;
@@ -3032,6 +3068,23 @@
     box-shadow: 0 4px 14px rgba(0,0,0,0.5);
     background: #2a1408;
   }
+  /* Variante con logo MD: estilo circular dorado, no foto */
+  .fday-card-thumb-logo {
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, #FFE48E 0%, #C5A55A 55%, #7A5B22 100%);
+    padding: 3px;
+    border: 1px solid rgba(255,230,160,0.7);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5), 0 0 14px rgba(255,180,80,0.35);
+    animation: fdayCardLogoGlow 3.5s ease-in-out infinite;
+  }
+  .fday-card-thumb-logo img {
+    background: #111;
+    border-radius: 50% !important;
+  }
+  @keyframes fdayCardLogoGlow {
+    0%,100% { box-shadow: 0 4px 14px rgba(0,0,0,0.5), 0 0 14px rgba(255,180,80,0.35); }
+    50%     { box-shadow: 0 4px 14px rgba(0,0,0,0.5), 0 0 24px rgba(255,200,90,0.6);  }
+  }
   .fday-card-thumb img {
     width: 100%; height: 100%;
     object-fit: cover;
@@ -3148,6 +3201,11 @@
       <div class="pre-sep-diamond"></div>
       <div class="pre-sep-line"></div>
     </div>
+    <!-- Solo visible cuando #md-preloader.fday-themed (Día del Padre activo) -->
+    <div class="pre-fday">
+      <div class="pre-fday-title">¡Feliz Día del Padre!</div>
+      <div class="pre-fday-date">Domingo 21 · Junio</div>
+    </div>
   </div>
   <div class="pre-dots">
     <span></span><span></span><span></span>
@@ -3256,9 +3314,8 @@
   <div class="fday-front-layer">
     <div class="fday-card" role="button" tabindex="0"
          onclick="window.open('https://wa.me/593963259963?text=' + encodeURIComponent('¡Hola! Quiero reservar para Día del Padre 🥩'), '_blank')">
-      <div class="fday-card-thumb">
-        <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211830_fbbd8f58-bd8b-491a-afcc-6b55ba708dd1_min.webp"
-             alt="Asado Día del Padre" loading="lazy">
+      <div class="fday-card-thumb fday-card-thumb-logo">
+        <img id="fday-card-logo" alt="Montaña Dorada" loading="lazy">
       </div>
       <div class="fday-card-text">
         <span class="fday-card-eyebrow">🥩 Domingo 21 · Junio</span>
@@ -3611,8 +3668,19 @@
     var realLogo = document.querySelector('#formSection .logo-frame img');
     var preLogo  = document.getElementById('pre-logo-img');
     var homeLogo = document.getElementById('home-logo-img');
+    var fdayLogo = document.getElementById('fday-card-logo');
     if(realLogo && preLogo)  preLogo.src  = realLogo.src;
     if(realLogo && homeLogo) homeLogo.src = realLogo.src;
+    if(realLogo && fdayLogo) fdayLogo.src = realLogo.src;
+
+    // Temática Día del Padre en el preloader (sólo durante el periodo activo)
+    try {
+      var FDAY_END_TS = new Date('2026-06-23T00:00:00-05:00').getTime();
+      if (Date.now() < FDAY_END_TS) {
+        var pre = document.getElementById('md-preloader');
+        if (pre) pre.classList.add('fday-themed');
+      }
+    } catch(e){}
 
     function hidePreloader(){
       var pre = document.getElementById('md-preloader');
@@ -6387,7 +6455,33 @@
 (function(){
   var FDAY_END = new Date('2026-06-23T00:00:00-05:00').getTime();
 
+  // ── URLs del video Higgsfield (cada una con voz baked-in) ──
+  // Desktop 16:9 — Veo 3.1 basic + audio AAC (CloudFront)
+  var FDAY_VIDEO_DESKTOP = 'https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_213755_883125ea-09f5-4a16-b2ef-ea47883cee9c.mp4';
+  // Mobile 9:16 portrait — Veo 3.1 ULTRA quality (voz natural), comprimido 720p y servido desde GitHub Pages
+  var FDAY_VIDEO_MOBILE  = 'fday-mobile.mp4';
+
   function isActive(){ return Date.now() < FDAY_END; }
+
+  function fdayIsMobile(){
+    return window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1024px)').matches;
+  }
+  function fdayPickVideoSrc(){
+    var v = document.getElementById('fday-hero-video');
+    if (!v) return;
+    var source = v.querySelector('source');
+    if (!source) return;
+    var target = fdayIsMobile() ? FDAY_VIDEO_MOBILE : FDAY_VIDEO_DESKTOP;
+    if (source.src !== target) {
+      var wasMuted = v.muted;
+      var wasUnmuted = !wasMuted;
+      source.src = target;
+      v.load();
+      v.muted = wasMuted;
+      var p = v.play();
+      if (p && p.catch) p.catch(function(){});
+    }
+  }
 
   function apply(){
     var home = document.getElementById('md-home');
@@ -6431,7 +6525,16 @@
   function init(){
     apply();
     setInterval(apply, 60 * 1000);
-    if (isActive()) fdayArmUnmute();
+    if (isActive()) {
+      fdayArmUnmute();
+      fdayPickVideoSrc();
+      // Re-pick si el viewport cambia (rotación de dispositivo, resize)
+      var resizeTimer;
+      window.addEventListener('resize', function(){
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(fdayPickVideoSrc, 250);
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
