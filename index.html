@@ -727,11 +727,20 @@
   ══════════════════════════════════════════ */
   #md-home {
     position: fixed; inset: 0; z-index: 50;
+    /* Usa dynamic viewport height para evitar la "sanja negra" en mobile
+       cuando la barra del navegador se colapsa al hacer scroll */
+    height: 100vh;
+    height: 100dvh;
     display: none; flex-direction: column;
-    align-items: center; overflow: hidden;
+    align-items: center;
+    /* Permite scroll vertical si el contenido excede el viewport en mobile */
+    overflow-y: auto; overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     opacity: 0; transition: opacity 0.7s ease;
   }
   #md-home.visible { opacity: 1; }
+  /* Oculta scrollbar visual en mobile (sigue siendo scrollable) */
+  #md-home::-webkit-scrollbar { width: 0; height: 0; }
 
   .home-bg {
     position: absolute; inset: 0;
@@ -1789,8 +1798,9 @@
     position: relative; z-index: 2;
     display: flex; flex-direction: column;
     align-items: center;
-    width: 100%; height: 100%;
-    padding: 44px 24px 28px;
+    width: 100%;
+    min-height: 100%;
+    padding: 44px 24px 36px;
     max-width: 460px; margin: 0 auto;
   }
 
@@ -1841,12 +1851,13 @@
   .home-sep-line { flex:1; height:1px; background: linear-gradient(90deg,transparent,var(--gold3),transparent); }
   .home-sep-diamond { width:5px; height:5px; background:var(--gold); transform:rotate(45deg); flex-shrink:0; }
 
-  /* ── 3 Botones centrados ── */
+  /* ── Botones centrados ── */
   .home-btns {
-    display: flex; flex-direction: column; gap: 11px;
+    display: flex; flex-direction: column; gap: 14px;
     width: 100%; flex: 1;
     justify-content: center;
     max-width: 400px;
+    padding: 24px 0 8px;
   }
 
   .home-btn {
@@ -2951,6 +2962,26 @@
   @media (max-width: 480px) {
     .fday-headline-text { font-size: 21px; }
     .fday-headline-deco { font-size: 9.5px; letter-spacing: 0.18em; gap: 8px; }
+  }
+  /* ── Mobile: compactar layout para que entren los 5 botones ── */
+  @media (max-width: 480px) {
+    .home-content { padding: 30px 18px 28px; }
+    .home-logo-wrap { width: 80px; height: 80px; }
+    .home-name { font-size: 26px; letter-spacing: 2px; margin-top: 10px; }
+    .home-tagline { margin-top: 5px; font-size: 8.5px; letter-spacing: 3px; }
+    .home-sep { margin-top: 10px; width: 140px; }
+    .home-btns { gap: 12px; padding: 16px 0 12px; }
+    .home-btn { padding: 14px 16px; }
+    .home-btn-title { font-size: 14px; }
+    .home-btn-desc { font-size: 11px; }
+  }
+  /* ── Mobile: desactiva animaciones GPU-pesadas para que el video no se trabe ── */
+  @media (max-width: 600px), (hover: none) and (pointer: coarse) {
+    .home-logo-wrap::before { animation: none; filter: none; opacity: 0.7; }
+    .fday-hero-img { animation: none; }
+    .fday-hero-video { animation: none; }
+    .juegos-sparkles { display: none; }
+    .pre-logo-wrap::before { filter: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .fday-headline-text, .fday-headline-emoji, .fday-headline { animation: none !important; }
