@@ -1793,6 +1793,16 @@
       rgba(0,0,0,0.90) 100%
     );
   }
+  /* Durante Dia del Padre, el overlay se aclara para que el video se vea */
+  #md-home:not(.fday-expired) .home-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.40) 0%,
+      rgba(0,0,0,0.10) 38%,
+      rgba(0,0,0,0.18) 62%,
+      rgba(0,0,0,0.65) 100%
+    );
+  }
 
   .home-content {
     position: relative; z-index: 2;
@@ -2975,6 +2985,11 @@
     .home-btn-title { font-size: 14px; }
     .home-btn-desc { font-size: 11px; }
   }
+  /* Durante Día del Padre: el headline reemplaza tagline+separador
+     para evitar acumulación de texto vertical en mobile */
+  #md-home:not(.fday-expired) .home-tagline,
+  #md-home:not(.fday-expired) .home-sep { display: none; }
+  #md-home:not(.fday-expired) .home-name { margin-bottom: 14px; }
   /* ── Mobile: desactiva animaciones GPU-pesadas para que el video no se trabe ── */
   @media (max-width: 600px), (hover: none) and (pointer: coarse) {
     .home-logo-wrap::before { animation: none; filter: none; opacity: 0.7; }
@@ -2987,45 +3002,50 @@
     .fday-headline-text, .fday-headline-emoji, .fday-headline { animation: none !important; }
   }
 
-  /* ── Pill "Toca para activar saludo" + toggle de mute persistente ── */
+  /* ── Botón mute toggle (arranca ya compacto en esquina inf-derecha) ── */
   .fday-tap-pill {
     position: fixed;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
-    left: 50%; transform: translateX(-50%);
-    display: flex; align-items: center; gap: 8px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    right: calc(env(safe-area-inset-right, 0px) + 16px);
+    width: 46px; height: 46px;
+    display: flex; align-items: center; justify-content: center;
     background: linear-gradient(135deg, rgba(40,18,6,0.95), rgba(60,28,8,0.95));
     border: 1px solid rgba(212,185,110,0.55);
     color: #FFD685;
     font-family: Arial, sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    padding: 10px 18px;
-    border-radius: 999px;
+    border-radius: 50%;
     box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(255,180,80,0.25);
     z-index: 999;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    transition: padding 0.3s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    animation: fdayTapIn 0.7s cubic-bezier(0.16,1,0.3,1) 1.5s both,
-               fdayTapPulse 2s ease-in-out 2.2s infinite;
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    animation: fdayTapCompact 0.5s cubic-bezier(0.16,1,0.3,1) 1.2s both,
+               fdayTapPulse 2.4s ease-in-out 1.7s infinite;
   }
-  .fday-tap-pill:active { filter: brightness(1.1); }
-
-  /* Estado compacto: tras la primera interacción se vuelve un botón redondo en la esquina */
-  .fday-tap-pill.compact {
-    left: auto;
-    right: calc(env(safe-area-inset-right, 0px) + 16px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-    transform: none;
-    width: 46px; height: 46px;
-    padding: 0;
-    gap: 0;
-    justify-content: center;
-    animation: fdayTapCompact 0.45s cubic-bezier(0.16,1,0.3,1) both;
+  .fday-tap-pill:active { filter: brightness(1.1); transform: scale(0.92); }
+  .fday-tap-pill .fday-tap-icon { font-size: 18px; }
+  /* El label viejo se renderiza como tooltip flotante */
+  .fday-tap-pill .fday-tap-label {
+    position: absolute;
+    right: 56px; top: 50%; transform: translateY(-50%);
+    white-space: nowrap;
+    background: linear-gradient(135deg, rgba(40,18,6,0.95), rgba(60,28,8,0.95));
+    border: 1px solid rgba(212,185,110,0.45);
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    color: #FFD685;
+    letter-spacing: 0.04em;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    pointer-events: none;
+    animation: fdayLabelIn 0.5s ease 1.4s both,
+               fdayLabelOut 0.5s ease 5.5s forwards;
   }
   .fday-tap-pill.compact .fday-tap-label { display: none; }
-  .fday-tap-pill.compact .fday-tap-icon { font-size: 18px; animation: none; }
+  @keyframes fdayLabelIn  { from { opacity: 0; transform: translate(8px, -50%); } to { opacity: 1; transform: translate(0, -50%); } }
+  @keyframes fdayLabelOut { to   { opacity: 0; transform: translate(8px, -50%); } }
+  .fday-tap-pill.compact { animation: fdayTapPulse 2.4s ease-in-out infinite; }
 
   /* Estado muted (audio desactivado): tono apagado */
   .fday-tap-pill.muted {
@@ -3041,21 +3061,13 @@
   }
   #md-home.fday-expired .fday-tap-pill { display: none; }
 
-  @keyframes fdayTapIn {
-    from { opacity: 0; transform: translate(-50%, 20px); }
-    to   { opacity: 1; transform: translate(-50%, 0); }
-  }
   @keyframes fdayTapPulse {
     0%,100% { box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(255,180,80,0.25); }
     50%     { box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 32px rgba(255,180,80,0.55); }
   }
-  @keyframes fdayTapBob {
-    0%,100% { transform: translateY(0) scale(1); }
-    50%     { transform: translateY(-2px) scale(1.1); }
-  }
   @keyframes fdayTapCompact {
-    from { opacity: 0; transform: scale(0.7); }
-    to   { opacity: 1; transform: scale(1);   }
+    from { opacity: 0; transform: scale(0.55); }
+    to   { opacity: 1; transform: scale(1);    }
   }
 
   /* Imagen de fondo (poster Higgsfield IA) con Ken Burns suave */
@@ -3081,13 +3093,13 @@
     from { transform: scale(1.02) translate(0,0); }
     to   { transform: scale(1.10) translate(-1.5%, -0.8%); }
   }
-  /* Veil para que el logo y los botones se sigan leyendo */
+  /* Veil suave — deja respirar el video del asado */
   .fday-veil {
     position: absolute; inset: 0;
     z-index: 3;
     background:
-      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.82) 100%),
-      linear-gradient(180deg, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.80) 100%);
+      radial-gradient(ellipse at 50% 60%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.20) 55%, rgba(0,0,0,0.58) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.55) 100%);
   }
 
   /* ── TARJETA ELEGANTE ── */
@@ -6592,14 +6604,14 @@
     var v = document.getElementById('fday-hero-video');
     if (!v) return;
     var pill = document.getElementById('fday-tap-pill');
+    if (pill) pill.classList.add('compact'); // oculta tooltip de hint
     if (!fdayFirstInteracted) {
-      // Primera interacción: desmutea, reinicia y compacta el pill
+      // Primera interacción: desmutea y reinicia desde el inicio
       fdayFirstInteracted = true;
       try { v.currentTime = 0; } catch(e){}
-      if (pill) pill.classList.add('compact');
       fdayApplyMute(false);
     } else {
-      // Interacciones siguientes sobre el pill: toggle on/off
+      // Interacciones siguientes: toggle on/off
       fdayApplyMute(!v.muted);
     }
   }
