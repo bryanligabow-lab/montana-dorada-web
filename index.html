@@ -2836,45 +2836,52 @@
      MODO DÍA DEL PADRE — rediseño elegante
      Activo hasta el 23 de junio 2026 00:00 ET
   ════════════════════════════════════════ */
+  /* Capa de FONDO (imagen+video+veil) — detrás del contenido */
   .fday-anim-layer {
     position: absolute; inset: 0;
     pointer-events: none;
-    z-index: 3;
+    z-index: 1;
     overflow: hidden;
   }
-  #md-home.fday-expired .fday-anim-layer { display: none; }
+  /* Capa de TARJETA/SELLO — al frente */
+  .fday-front-layer {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  #md-home.fday-expired .fday-anim-layer,
+  #md-home.fday-expired .fday-front-layer { display: none; }
 
-  /* Imagen de fondo (AI) con Ken Burns suave */
+  /* Imagen de fondo (poster Higgsfield IA) con Ken Burns suave */
   .fday-hero-img {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    opacity: 0.55;
+    opacity: 0.85;
     animation: fdayKen 22s ease-in-out infinite alternate;
+    z-index: 1;
   }
+  /* Video cinemático (Higgsfield Cinema Studio 3.0) — encima del poster */
+  .fday-hero-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.95;
+    z-index: 2;
+    animation: fdayVideoIn 1.2s ease 0.3s both;
+  }
+  @keyframes fdayVideoIn { from { opacity: 0; } to { opacity: 0.95; } }
   @keyframes fdayKen {
-    from { transform: scale(1) translate(0,0); }
-    to   { transform: scale(1.10) translate(-2%, -1%); }
+    from { transform: scale(1.02) translate(0,0); }
+    to   { transform: scale(1.10) translate(-1.5%, -0.8%); }
   }
   /* Veil para que el logo y los botones se sigan leyendo */
   .fday-veil {
     position: absolute; inset: 0;
+    z-index: 3;
     background:
-      radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.88) 100%),
-      linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.30) 35%, rgba(0,0,0,0.85) 100%);
-  }
-  /* Glow cálido lateral muy sutil */
-  .fday-warm-glow {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse at 15% 25%, rgba(255,150,50,0.18), transparent 45%),
-      radial-gradient(ellipse at 85% 75%, rgba(255,120,30,0.16), transparent 45%);
-    mix-blend-mode: screen;
-    animation: fdayWarmPulse 9s ease-in-out infinite;
-  }
-  @keyframes fdayWarmPulse {
-    0%,100% { opacity: 0.7; }
-    50%     { opacity: 1; }
+      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.82) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.80) 100%);
   }
 
   /* ── TARJETA ELEGANTE ── */
@@ -3006,7 +3013,7 @@
     .fday-seal-mes { font-size: 6.5px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .fday-hero-img, .fday-warm-glow, .fday-card, .fday-seal, .fday-seal-arc {
+    .fday-hero-img, .fday-hero-video, .fday-card, .fday-seal, .fday-seal-arc {
       animation: none !important;
     }
   }
@@ -3121,23 +3128,30 @@
     </div>
   </div>
 
-  <!-- ── Modo Día del Padre · imagen + tarjeta elegante ── -->
+  <!-- ── Modo Día del Padre · video cinemático Higgsfield + tarjeta elegante ── -->
   <div class="fday-anim-layer" aria-hidden="false">
     <img class="fday-hero-img"
-         src="https://image.pollinations.ai/prompt/cinematic%20rustic%20grilled%20meat%20parrilla%20asado%20with%20flames%20and%20smoke%20warm%20golden%20amber%20lighting%20dark%20moody%20restaurant%20background%20professional%20food%20photography%20ultra%20detailed?width=1600&height=1000&seed=2026&nologo=true&model=flux"
-         alt="" loading="lazy">
+         src="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211830_fbbd8f58-bd8b-491a-afcc-6b55ba708dd1_min.webp"
+         alt="" loading="eager" decoding="async">
+    <video class="fday-hero-video" autoplay muted loop playsinline preload="auto"
+           poster="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211830_fbbd8f58-bd8b-491a-afcc-6b55ba708dd1_min.webp">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211911_0fbf7bd1-06f3-4109-8a7c-66028298cf8a.mp4" type="video/mp4">
+    </video>
     <div class="fday-veil"></div>
-    <div class="fday-warm-glow"></div>
+  </div>
 
-    <div class="fday-card" role="button" tabindex="0">
+  <!-- ── Tarjeta y sello al frente del contenido ── -->
+  <div class="fday-front-layer">
+    <div class="fday-card" role="button" tabindex="0"
+         onclick="window.open('https://wa.me/593963259963?text=' + encodeURIComponent('¡Hola! Quiero reservar para Día del Padre 🥩'), '_blank')">
       <div class="fday-card-thumb">
-        <img src="https://image.pollinations.ai/prompt/close%20up%20juicy%20grilled%20steak%20with%20grill%20marks%20warm%20golden%20lighting%20food%20photography%20rustic?width=180&height=180&seed=1881&nologo=true&model=flux"
+        <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3Euqi2g3IqGCVHFJ2DEfJR7hEQS/hf_20260609_211830_fbbd8f58-bd8b-491a-afcc-6b55ba708dd1_min.webp"
              alt="Asado Día del Padre" loading="lazy">
       </div>
       <div class="fday-card-text">
         <span class="fday-card-eyebrow">🥩 Domingo 21 · Junio</span>
         <h3 class="fday-card-title">Día del Padre</h3>
-        <p class="fday-card-sub">Celebra al papá más bravo con un asado de leyenda</p>
+        <p class="fday-card-sub">Reserva tu asado · Toca aquí</p>
       </div>
     </div>
 
