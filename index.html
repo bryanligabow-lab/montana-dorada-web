@@ -2956,7 +2956,7 @@
     .fday-headline-text, .fday-headline-emoji, .fday-headline { animation: none !important; }
   }
 
-  /* ── Pill "Toca para activar saludo" ── */
+  /* ── Pill "Toca para activar saludo" + toggle de mute persistente ── */
   .fday-tap-pill {
     position: fixed;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
@@ -2972,18 +2972,44 @@
     border-radius: 999px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(255,180,80,0.25);
     z-index: 999;
-    pointer-events: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: padding 0.3s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     animation: fdayTapIn 0.7s cubic-bezier(0.16,1,0.3,1) 1.5s both,
                fdayTapPulse 2s ease-in-out 2.2s infinite;
   }
-  .fday-tap-pill.played {
-    animation: fdayTapOut 0.5s ease both;
+  .fday-tap-pill:active { filter: brightness(1.1); }
+
+  /* Estado compacto: tras la primera interacción se vuelve un botón redondo en la esquina */
+  .fday-tap-pill.compact {
+    left: auto;
+    right: calc(env(safe-area-inset-right, 0px) + 16px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    transform: none;
+    width: 46px; height: 46px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+    animation: fdayTapCompact 0.45s cubic-bezier(0.16,1,0.3,1) both;
   }
+  .fday-tap-pill.compact .fday-tap-label { display: none; }
+  .fday-tap-pill.compact .fday-tap-icon { font-size: 18px; animation: none; }
+
+  /* Estado muted (audio desactivado): tono apagado */
+  .fday-tap-pill.muted {
+    background: linear-gradient(135deg, rgba(28,18,10,0.92), rgba(45,30,16,0.92));
+    border-color: rgba(170,140,80,0.4);
+    color: #B89A5C;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+  }
+
   .fday-tap-pill .fday-tap-icon {
     font-size: 14px;
     animation: fdayTapBob 1.4s ease-in-out infinite;
   }
   #md-home.fday-expired .fday-tap-pill { display: none; }
+
   @keyframes fdayTapIn {
     from { opacity: 0; transform: translate(-50%, 20px); }
     to   { opacity: 1; transform: translate(-50%, 0); }
@@ -2996,8 +3022,9 @@
     0%,100% { transform: translateY(0) scale(1); }
     50%     { transform: translateY(-2px) scale(1.1); }
   }
-  @keyframes fdayTapOut {
-    to { opacity: 0; transform: translate(-50%, 30px); pointer-events: none; }
+  @keyframes fdayTapCompact {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1);   }
   }
 
   /* Imagen de fondo (poster Higgsfield IA) con Ken Burns suave */
@@ -3330,10 +3357,11 @@
       <span class="fday-seal-mes">JUN</span>
     </div>
 
-    <!-- Pill flotante que invita a tocar para activar el audio -->
-    <div class="fday-tap-pill" id="fday-tap-pill">
-      <span class="fday-tap-icon">🔊</span>
-      <span>Toca para escuchar el saludo</span>
+    <!-- Pill: primero invita a activar el audio; tras el primer toque queda como botón mute/unmute persistente -->
+    <div class="fday-tap-pill" id="fday-tap-pill" role="button" tabindex="0"
+         aria-label="Activar o silenciar el saludo del video">
+      <span class="fday-tap-icon" id="fday-tap-icon">🔊</span>
+      <span class="fday-tap-label" id="fday-tap-label">Toca para escuchar el saludo</span>
     </div>
   </div>
 
@@ -6495,38 +6523,85 @@
     }
   }
 
-  /* ── Saludo cinemático: desmutear el video real al primer toque ──
+  /* ── Saludo cinemático + toggle de mute persistente ──
      El video tiene audio baked-in (voz "¡Feliz día papá!" + ambient grill)
      generado con veo3_1. Los navegadores bloquean autoplay con sonido,
-     así que arrancamos muteado y desmuteamos en la primera interacción. */
-  var fdayUnmuted = false;
-  function fdayUnmuteHero(){
-    if (fdayUnmuted || !isActive()) return;
+     así que arrancamos muteado. En el primer toque desmuteamos y el pill
+     queda como botón persistente 🔊/🔇 en la esquina inferior derecha. */
+  var fdayFirstInteracted = false;
+  function fdaySetPillState(muted){
+    var pill  = document.getElementById('fday-tap-pill');
+    var icon  = document.getElementById('fday-tap-icon');
+    var label = document.getElementById('fday-tap-label');
+    if (!pill || !icon) return;
+    pill.classList.toggle('muted', !!muted);
+    icon.textContent = muted ? '🔇' : '🔊';
+    if (pill.classList.contains('compact')) {
+      pill.setAttribute('aria-label', muted ? 'Activar saludo del video' : 'Silenciar saludo del video');
+      pill.title = muted ? 'Activar saludo' : 'Silenciar saludo';
+    } else if (label) {
+      label.textContent = muted ? 'Toca para silenciar el video' : 'Toca para escuchar el saludo';
+    }
+  }
+  function fdayApplyMute(muted){
     var v = document.getElementById('fday-hero-video');
     if (!v) return;
     try {
-      v.muted = false;
-      v.volume = 1;
-      v.currentTime = 0;
-      var p = v.play();
-      if (p && p.catch) p.catch(function(){});
-      fdayUnmuted = true;
-      var pill = document.getElementById('fday-tap-pill');
-      if (pill) pill.classList.add('played');
+      v.muted = !!muted;
+      if (!muted) {
+        v.volume = 1;
+        var p = v.play();
+        if (p && p.catch) p.catch(function(){});
+      }
     } catch(e){}
+    fdaySetPillState(muted);
   }
-  function fdayArmUnmute(){
-    var opts = { once: true, passive: true };
-    document.addEventListener('click', fdayUnmuteHero, opts);
-    document.addEventListener('touchstart', fdayUnmuteHero, opts);
-    document.addEventListener('keydown', fdayUnmuteHero, opts);
+  function fdayHandleInteraction(){
+    if (!isActive()) return;
+    var v = document.getElementById('fday-hero-video');
+    if (!v) return;
+    var pill = document.getElementById('fday-tap-pill');
+    if (!fdayFirstInteracted) {
+      // Primera interacción: desmutea, reinicia y compacta el pill
+      fdayFirstInteracted = true;
+      try { v.currentTime = 0; } catch(e){}
+      if (pill) pill.classList.add('compact');
+      fdayApplyMute(false);
+    } else {
+      // Interacciones siguientes sobre el pill: toggle on/off
+      fdayApplyMute(!v.muted);
+    }
+  }
+  function fdayArmInteraction(){
+    var pill = document.getElementById('fday-tap-pill');
+    if (pill) {
+      pill.addEventListener('click', function(e){
+        e.stopPropagation();
+        fdayHandleInteraction();
+      });
+      pill.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          fdayHandleInteraction();
+        }
+      });
+    }
+    // La primera interacción puede venir desde cualquier parte de la página
+    // (el navegador requiere "gesture" reciente para permitir audio).
+    function firstFromDoc(){
+      if (fdayFirstInteracted) return;
+      fdayHandleInteraction();
+    }
+    document.addEventListener('click', firstFromDoc, { passive: true });
+    document.addEventListener('touchstart', firstFromDoc, { passive: true });
+    document.addEventListener('keydown', firstFromDoc, { passive: true });
   }
 
   function init(){
     apply();
     setInterval(apply, 60 * 1000);
     if (isActive()) {
-      fdayArmUnmute();
+      fdayArmInteraction();
       fdayPickVideoSrc();
       // Re-pick si el viewport cambia (rotación de dispositivo, resize)
       var resizeTimer;
