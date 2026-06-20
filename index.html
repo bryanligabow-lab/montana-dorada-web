@@ -3252,6 +3252,211 @@
       animation: none !important;
     }
   }
+
+  /* ════════ MENÚ ESPECIAL DÍA DEL PADRE (builder) ════════ */
+  .home-btn-fdad {
+    border-color: rgba(201,168,76,0.55);
+    background: linear-gradient(135deg, rgba(40,28,12,0.6), rgba(20,14,8,0.6));
+  }
+  .home-btn-fdad .home-btn-icon { filter: drop-shadow(0 0 8px rgba(255,107,26,0.5)); }
+
+  #fdm-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(8, 6, 4, 0.97);
+    z-index: 250; overflow-y: auto;
+    padding: 14px 12px 110px;
+    animation: fdmOverlayIn 0.4s ease both;
+  }
+  #fdm-overlay.open { display: block; }
+  @keyframes fdmOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+  #fdm-overlay::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 90%, rgba(192, 57, 43, 0.16) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 8%, rgba(232, 201, 106, 0.18) 0%, transparent 45%);
+    pointer-events: none; z-index: 0;
+  }
+  .fdm-panel { max-width: 420px; margin: 0 auto; position: relative; z-index: 2; }
+
+  .fdm-close-row {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; justify-content: flex-end; padding: 4px 0 8px;
+    background: linear-gradient(to bottom, rgba(8,6,4,0.97), rgba(8,6,4,0.4));
+  }
+  .fdm-close-btn {
+    background: rgba(20, 16, 10, 0.9);
+    border: 1px solid rgba(232,201,106,0.45);
+    border-radius: 50%; color: var(--gold2);
+    width: 36px; height: 36px; font-size: 18px; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+  }
+  .fdm-close-btn:hover { border-color: var(--gold2); color: #fff; transform: rotate(90deg); }
+
+  .fdm-hero { text-align: center; padding: 6px 8px 14px; }
+  .fdm-hero-eyebrow {
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .fdm-hero-title {
+    font-family: 'Cinzel', serif; font-weight: 700; font-size: 30px; line-height: 1.1;
+    color: var(--white);
+    background: linear-gradient(180deg, #F4E6BE, var(--gold));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .fdm-hero-ribbon {
+    display: inline-block; margin: 10px 0 8px;
+    padding: 5px 16px; border-radius: 999px;
+    font-size: 12px; letter-spacing: 1px;
+    color: #1a1206; font-weight: 600;
+    background: linear-gradient(135deg, var(--gold2), var(--gold3));
+  }
+  .fdm-hero-msg { font-size: 13px; color: var(--soft); max-width: 300px; margin: 0 auto; line-height: 1.5; }
+  .fdm-hero-sep { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; }
+  .fdm-hero-sep .ln { width: 50px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold3)); }
+  .fdm-hero-sep .ln:last-child { background: linear-gradient(90deg, var(--gold3), transparent); }
+  .fdm-hero-sep .hrt { font-size: 16px; }
+
+  .fdm-tabs { display: flex; gap: 8px; margin: 4px 0 10px; }
+  .fdm-tab {
+    flex: 1; cursor: pointer; text-align: left;
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px 12px; color: var(--white);
+    display: flex; flex-direction: column; gap: 3px; transition: all 0.2s;
+  }
+  .fdm-tab.active {
+    border-color: var(--gold2);
+    background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(192,57,43,0.12));
+    box-shadow: 0 0 22px rgba(201,168,76,0.18);
+  }
+  .ftab-badge { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+  .ftab-name { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600; }
+  .ftab-price { font-size: 18px; font-weight: 700; color: var(--gold2); }
+  .ftab-extra { font-size: 10.5px; color: var(--soft); }
+
+  .fdm-version { display: flex; gap: 8px; margin-bottom: 14px; }
+  .fdm-ver {
+    flex: 1; cursor: pointer; padding: 10px 8px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--border); color: var(--soft);
+    font-size: 13px; font-weight: 600; transition: all 0.2s; text-align: center; line-height: 1.3;
+  }
+  .fdm-ver span { display: block; font-size: 9.5px; font-weight: 400; letter-spacing: 0.5px; margin-top: 2px; }
+  .fdm-ver.active {
+    color: #1a1206; border-color: var(--gold2);
+    background: linear-gradient(135deg, var(--gold2), var(--gold3));
+  }
+  .fdm-ver.active span { color: rgba(26,18,6,0.75); }
+
+  .fdm-build { display: none; }
+  .fdm-build.active { display: block; }
+  .fdm-build-head { margin-bottom: 12px; }
+  .fdm-build-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 600; color: var(--white); }
+  .fdm-build-sub { font-size: 12px; color: var(--soft); margin-top: 2px; }
+
+  .fdm-section { margin-bottom: 16px; }
+  .fdm-section-h {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 9px;
+    font-size: 13px; font-weight: 600; color: var(--white);
+  }
+  .fdm-section-h .ico { font-size: 16px; }
+  .fdm-section-h .pick {
+    margin-left: auto; font-size: 10px; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--gold);
+  }
+  .fdm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fdm-chip {
+    cursor: pointer; padding: 9px 14px; border-radius: 999px;
+    background: var(--card2); border: 1px solid var(--border); color: var(--white);
+    font-size: 13px; transition: all 0.18s; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .fdm-chip .ck {
+    width: 15px; height: 15px; border-radius: 50%; font-size: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: transparent; transition: all 0.18s;
+  }
+  .fdm-chip.selected {
+    border-color: var(--gold2); color: var(--white);
+    background: linear-gradient(135deg, rgba(201,168,76,0.22), rgba(192,57,43,0.14));
+  }
+  .fdm-chip.selected .ck { background: var(--gold2); color: #1a1206; }
+  .fdm-chip.fixed { opacity: 1; cursor: default; border-color: var(--gold3); }
+  .fdm-chip .incl-tag { font-size: 9px; color: var(--gold); margin-left: 2px; }
+
+  .fdm-incl-strip, .fdm-dessert-strip {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px; border-radius: 12px; margin-top: 4px;
+    font-size: 12.5px; line-height: 1.4;
+    background: rgba(201,168,76,0.07); border: 1px dashed rgba(201,168,76,0.35);
+    color: var(--white);
+  }
+  .fdm-incl-strip .ico, .fdm-dessert-strip .ico { font-size: 18px; }
+  .fdm-dessert-strip strong { display: block; color: var(--gold2); font-size: 12px; }
+  .fdm-incl-multi { margin-bottom: 14px; }
+
+  .fdm-builds.ver-sencillo .fdm-especial-only { display: none; }
+
+  /* Barra resumen / CTA */
+  .fdm-summary-bar {
+    display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 260;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to top, rgba(8,6,4,0.99), rgba(8,6,4,0.92));
+    border-top: 1px solid rgba(201,168,76,0.3);
+    backdrop-filter: blur(8px);
+  }
+  #fdm-overlay.open .fdm-summary-bar { display: block; }
+  .fdm-sum-meta { display: flex; align-items: baseline; justify-content: space-between; max-width: 420px; margin: 0 auto 8px; }
+  .fdm-sum-label { font-size: 12px; color: var(--soft); }
+  .fdm-sum-progress { color: var(--gold); font-weight: 600; }
+  .fdm-sum-price { font-size: 24px; font-weight: 700; color: var(--gold2); }
+  .fdm-sum-price.flash { animation: fdmFlash 0.4s ease; }
+  @keyframes fdmFlash { 0% { transform: scale(1.25); color: #fff; } 100% { transform: scale(1); } }
+  .fdm-cta {
+    max-width: 420px; margin: 0 auto; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px; border-radius: 14px; border: none; cursor: pointer;
+    font-size: 15px; font-weight: 700; color: #1a1206;
+    background: linear-gradient(135deg, var(--gold2), var(--gold3));
+    transition: all 0.2s;
+  }
+  .fdm-cta:disabled { opacity: 0.45; cursor: not-allowed; background: var(--card2); color: var(--soft); }
+  .fdm-cta .cta-arrow { font-size: 18px; }
+
+  .fdm-footer { text-align: center; padding: 18px 0 6px; }
+  .fdm-footer-msg { font-size: 12px; color: var(--soft); font-style: italic; }
+  .fdm-footer-decor { margin-top: 8px; font-size: 16px; letter-spacing: 8px; }
+
+  /* Modal "Mostrar al mesero" */
+  #fdm-share-modal {
+    display: none; position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 20px;
+  }
+  #fdm-share-modal.open { display: flex; }
+  .fdm-share-card {
+    position: relative; width: 100%; max-width: 360px;
+    background: linear-gradient(160deg, #15100A, #0C0906);
+    border: 1px solid rgba(201,168,76,0.45); border-radius: 20px;
+    padding: 26px 22px 22px; box-shadow: var(--shadow);
+    animation: fdmCardIn 0.35s cubic-bezier(.2,.9,.3,1.3) both;
+  }
+  @keyframes fdmCardIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: none; } }
+  .fdm-share-close {
+    position: absolute; top: 12px; right: 12px; width: 30px; height: 30px;
+    border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    color: var(--soft); cursor: pointer; font-size: 15px;
+  }
+  .fdm-share-eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); text-align: center; }
+  .fdm-share-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; color: var(--gold2); text-align: center; margin-top: 6px; }
+  .fdm-share-sub { font-size: 12.5px; color: var(--soft); text-align: center; margin-bottom: 16px; }
+  .fdm-share-list { list-style: none; margin: 0 0 16px; padding: 0; }
+  .fdm-share-list li {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 9px 0; border-bottom: 1px solid rgba(201,168,76,0.12); font-size: 13.5px;
+  }
+  .fdm-share-list li:last-child { border-bottom: none; }
+  .fdm-share-list .lbl { color: var(--soft); }
+  .fdm-share-list .val { color: var(--white); font-weight: 500; text-align: right; }
+  .fdm-share-list .val.gold { color: var(--gold2); }
+  .fdm-share-foot { text-align: center; font-size: 11px; letter-spacing: 1px; color: var(--gold); }
 </style>
 </head>
 <body>
@@ -3441,6 +3646,15 @@
         <span class="home-btn-text">
           <span class="home-btn-title">Menú Día de la Madre</span>
           <span class="home-btn-desc">Sabor que enamora · 2 opciones especiales</span>
+        </span>
+        <span class="home-btn-arrow">›</span>
+      </button>
+
+      <button class="home-btn home-btn-fdad" id="btn-fdad" onclick="window.fdayMenu && fdayMenu.open()" style="display:none;">
+        <span class="home-btn-icon">🥩</span>
+        <span class="home-btn-text">
+          <span class="home-btn-title">Menú especial de Papá</span>
+          <span class="home-btn-desc">Arma su plato · 2 opciones · sencillo o especial</span>
         </span>
         <span class="home-btn-arrow">›</span>
       </button>
@@ -6510,6 +6724,391 @@
   window.mdayMenu = {
     open: open, close: close,
     switchTab: switchTab,
+    share: share, closeShare: closeShare,
+    isActive: isActive
+  };
+})();
+</script>
+
+<!-- ════════════════════════════════════════
+     OVERLAY MENÚ ESPECIAL DÍA DEL PADRE
+════════════════════════════════════════ -->
+<div id="fdm-overlay">
+  <div class="fdm-panel">
+
+    <div class="fdm-close-row">
+      <button class="fdm-close-btn" onclick="window.fdayMenu && fdayMenu.close()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="fdm-hero">
+      <div class="fdm-hero-eyebrow">Especial</div>
+      <div class="fdm-hero-title">Para el<br>Mejor Papá 🥩</div>
+      <div class="fdm-hero-ribbon">Feliz Día del Padre</div>
+      <div class="fdm-hero-msg">
+        Arma su plato a su gusto y muéstraselo a caja
+      </div>
+      <div class="fdm-hero-sep">
+        <span class="ln"></span><span class="hrt">🍷</span><span class="ln"></span>
+      </div>
+    </div>
+
+    <!-- ── TABS de Opciones ── -->
+    <div class="fdm-tabs" role="tablist">
+      <button class="fdm-tab active" data-opt="1" type="button" onclick="window.fdayMenu && fdayMenu.switchTab(1)">
+        <span class="ftab-badge">Opción 1</span>
+        <span class="ftab-name">Proteína a elección</span>
+        <span class="ftab-price">desde $10</span>
+        <span class="ftab-extra">pollo · res · cerdo</span>
+      </button>
+      <button class="fdm-tab" data-opt="2" type="button" onclick="window.fdayMenu && fdayMenu.switchTab(2)">
+        <span class="ftab-badge">Opción 2</span>
+        <span class="ftab-name">Ribeye</span>
+        <span class="ftab-price">desde $15</span>
+        <span class="ftab-extra">plato fuerte</span>
+      </button>
+    </div>
+
+    <!-- ── Versión: sencillo / especial ── -->
+    <div class="fdm-version">
+      <button class="fdm-ver active" data-ver="sencillo" type="button" onclick="window.fdayMenu && fdayMenu.switchVer('sencillo')">
+        Sencillo
+        <span>plato completo</span>
+      </button>
+      <button class="fdm-ver" data-ver="especial" type="button" onclick="window.fdayMenu && fdayMenu.switchVer('especial')">
+        Especial
+        <span>+ postre y salsa</span>
+      </button>
+    </div>
+
+    <div class="fdm-builds ver-sencillo">
+
+      <!-- ══ OPCIÓN 1: Proteína a elección ══ -->
+      <div class="fdm-build active" data-opt="1">
+        <div class="fdm-build-head">
+          <div class="fdm-build-title">Opción 1 · Proteína a elección</div>
+          <div class="fdm-build-sub">Arma el plato del mejor papá</div>
+        </div>
+
+        <div class="fdm-incl-strip fdm-incl-multi">
+          <span class="ico">🍲</span>
+          <span><strong style="color:var(--gold2)">Incluye</strong> entrada del día · bebida · ensalada rusa</span>
+        </div>
+
+        <!-- Proteína -->
+        <div class="fdm-section">
+          <div class="fdm-section-h">
+            <span class="ico">🥩</span><span>Proteína</span>
+            <span class="pick">elige una</span>
+          </div>
+          <div class="fdm-chips" data-group="proteina" data-opt="1">
+            <button class="fdm-chip" type="button" data-val="Pollo"><span class="ck">✓</span>Pollo</button>
+            <button class="fdm-chip" type="button" data-val="Res"><span class="ck">✓</span>Res</button>
+            <button class="fdm-chip" type="button" data-val="Costilla"><span class="ck">✓</span>Costilla</button>
+            <button class="fdm-chip" type="button" data-val="Chuleta de cerdo"><span class="ck">✓</span>Chuleta de cerdo</button>
+            <button class="fdm-chip" type="button" data-val="Filete de cerdo"><span class="ck">✓</span>Filete de cerdo</button>
+          </div>
+        </div>
+
+        <!-- Acompañante -->
+        <div class="fdm-section">
+          <div class="fdm-section-h">
+            <span class="ico">🍚</span><span>Acompañante</span>
+            <span class="pick">elige uno</span>
+          </div>
+          <div class="fdm-chips" data-group="acomp" data-opt="1">
+            <button class="fdm-chip" type="button" data-val="Arroz blanco"><span class="ck">✓</span>Arroz blanco</button>
+            <button class="fdm-chip" type="button" data-val="Papa chaucha salteada"><span class="ck">✓</span>Papa chaucha salteada</button>
+          </div>
+        </div>
+
+        <!-- Salsa (solo especial) -->
+        <div class="fdm-section fdm-especial-only">
+          <div class="fdm-section-h">
+            <span class="ico">🍄</span><span>Salsa</span>
+            <span class="pick">elige una</span>
+          </div>
+          <div class="fdm-chips" data-group="salsa" data-opt="1">
+            <button class="fdm-chip" type="button" data-val="Salsa de camarón"><span class="ck">✓</span>Salsa de camarón</button>
+            <button class="fdm-chip" type="button" data-val="Salsa de champiñones"><span class="ck">✓</span>Salsa de champiñones</button>
+          </div>
+        </div>
+
+        <!-- Postre (solo especial) -->
+        <div class="fdm-dessert-strip fdm-especial-only">
+          <span class="ico">🍫</span>
+          <span><strong>Postre incluido</strong>En la versión especial</span>
+        </div>
+      </div>
+
+      <!-- ══ OPCIÓN 2: Ribeye ══ -->
+      <div class="fdm-build" data-opt="2">
+        <div class="fdm-build-head">
+          <div class="fdm-build-title">Opción 2 · Ribeye</div>
+          <div class="fdm-build-sub">Nuestro plato fuerte para papá</div>
+        </div>
+
+        <div class="fdm-incl-strip fdm-incl-multi">
+          <span class="ico">🍲</span>
+          <span><strong style="color:var(--gold2)">Incluye</strong> entrada del día · bebida · Ribeye · ensalada César · arroz blanco · papa chaucha salteada</span>
+        </div>
+
+        <!-- Salsa (solo especial) -->
+        <div class="fdm-section fdm-especial-only">
+          <div class="fdm-section-h">
+            <span class="ico">🍄</span><span>Salsa para el Ribeye</span>
+            <span class="pick">elige una</span>
+          </div>
+          <div class="fdm-chips" data-group="salsa" data-opt="2">
+            <button class="fdm-chip" type="button" data-val="Salsa de camarón"><span class="ck">✓</span>Salsa de camarón</button>
+            <button class="fdm-chip" type="button" data-val="Salsa de champiñones"><span class="ck">✓</span>Salsa de champiñones</button>
+          </div>
+        </div>
+
+        <!-- Postre (solo especial) -->
+        <div class="fdm-dessert-strip fdm-especial-only">
+          <span class="ico">🍫</span>
+          <span><strong>Postre incluido</strong>En la versión especial</span>
+        </div>
+
+        <div class="fdm-incl-strip" id="fdm-opt2-sencillo-note">
+          <span class="ico">✅</span>
+          <span>La versión sencilla ya está completa. Pulsa <strong style="color:var(--gold2)">Mostrar al mesero</strong>.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fdm-footer">
+      <div class="fdm-footer-msg">Hecho a la parrilla, con sabor de casa</div>
+      <div class="fdm-footer-decor">🥩 🍷 🔥</div>
+    </div>
+
+  </div>
+
+  <!-- ── Barra de resumen / CTA (sticky bottom) ── -->
+  <div class="fdm-summary-bar" id="fdm-sumbar">
+    <div class="fdm-sum-meta">
+      <span class="fdm-sum-label">Tu pedido <span class="fdm-sum-progress" id="fdm-sum-progress">0/2</span></span>
+      <span class="fdm-sum-price" id="fdm-sum-price">$10</span>
+    </div>
+    <button class="fdm-cta" id="fdm-cta-btn" type="button" onclick="window.fdayMenu && fdayMenu.share()" disabled>
+      <span class="cta-txt">Elige tus opciones ↑</span>
+      <span class="cta-arrow">›</span>
+    </button>
+  </div>
+</div>
+
+<!-- ── Modal "Mostrar al mesero / caja" ── -->
+<div id="fdm-share-modal">
+  <div class="fdm-share-card">
+    <button class="fdm-share-close" type="button" onclick="window.fdayMenu && fdayMenu.closeShare()" aria-label="Cerrar">✕</button>
+    <div class="fdm-share-eyebrow">🥩 Para caja</div>
+    <div class="fdm-share-title" id="fdm-share-title">Opción 1 · $10</div>
+    <div class="fdm-share-sub" id="fdm-share-sub">Proteína a elección · sencillo</div>
+    <ul class="fdm-share-list" id="fdm-share-list"></ul>
+    <div class="fdm-share-foot">Muestra esta pantalla en caja ✦</div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   MÓDULO MENÚ ESPECIAL DÍA DEL PADRE
+════════════════════════════════════════ */
+(function(){
+  // Activo hasta el 23 de junio 2026, 00:00 hora Ecuador (UTC-5)
+  var FDM_END = new Date('2026-06-23T00:00:00-05:00').getTime();
+
+  var PRICES = {
+    1: { sencillo: 10, especial: 12 },
+    2: { sencillo: 15, especial: 17 }
+  };
+  // Grupos requeridos por opción + versión
+  var REQ = {
+    1: { sencillo: ['proteina', 'acomp'], especial: ['proteina', 'acomp', 'salsa'] },
+    2: { sencillo: [],                    especial: ['salsa'] }
+  };
+  var NAMES = { 1: 'Proteína a elección', 2: 'Ribeye' };
+
+  var currentOpt = 1;
+  var currentVer = 'sencillo';
+  var selections = { 1: {}, 2: {} };
+
+  function isActive(){ return Date.now() < FDM_END; }
+
+  function applyMode(){
+    var btn = document.getElementById('btn-fdad');
+    if (btn) btn.style.display = isActive() ? '' : 'none';
+    if (!isActive()) {
+      var ov = document.getElementById('fdm-overlay');
+      if (ov) ov.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function open(){
+    if (!isActive()) return;
+    var ov = document.getElementById('fdm-overlay');
+    if (ov) { ov.classList.add('open'); ov.scrollTop = 0; document.body.style.overflow = 'hidden'; }
+    switchTab(1);
+    switchVer('sencillo');
+  }
+
+  function close(){
+    var ov = document.getElementById('fdm-overlay');
+    if (ov) ov.classList.remove('open');
+    closeShare();
+    document.body.style.overflow = '';
+  }
+
+  function switchTab(opt){
+    currentOpt = opt;
+    document.querySelectorAll('.fdm-tab').forEach(function(t){
+      t.classList.toggle('active', String(t.dataset.opt) === String(opt));
+    });
+    document.querySelectorAll('.fdm-build').forEach(function(b){
+      b.classList.toggle('active', String(b.dataset.opt) === String(opt));
+    });
+    var ov = document.getElementById('fdm-overlay');
+    if (ov) ov.scrollTo({ top: 0, behavior: 'smooth' });
+    updateSummary();
+  }
+
+  function switchVer(ver){
+    currentVer = ver;
+    document.querySelectorAll('.fdm-ver').forEach(function(v){
+      v.classList.toggle('active', v.dataset.ver === ver);
+    });
+    var builds = document.querySelector('.fdm-builds');
+    if (builds) {
+      builds.classList.toggle('ver-sencillo', ver === 'sencillo');
+      builds.classList.toggle('ver-especial', ver === 'especial');
+    }
+    // Nota de "sencillo completo" solo en opción 2 sencilla
+    var note = document.getElementById('fdm-opt2-sencillo-note');
+    if (note) note.style.display = (ver === 'sencillo') ? 'flex' : 'none';
+    updateSummary();
+  }
+
+  function selectChip(chipEl){
+    if (chipEl.classList.contains('fixed') || chipEl.disabled) return;
+    var group = chipEl.parentElement.dataset.group;
+    var opt   = chipEl.parentElement.dataset.opt;
+    var val   = chipEl.dataset.val;
+    if (!group || !opt || !val) return;
+
+    chipEl.parentElement.querySelectorAll('.fdm-chip').forEach(function(c){
+      if (!c.classList.contains('fixed')) c.classList.remove('selected');
+    });
+    chipEl.classList.add('selected');
+
+    if (!selections[opt]) selections[opt] = {};
+    selections[opt][group] = val;
+    updateSummary();
+  }
+
+  function updateSummary(){
+    var req  = REQ[currentOpt][currentVer];
+    var sel  = selections[currentOpt] || {};
+    var done = 0;
+    req.forEach(function(g){ if (sel[g]) done++; });
+
+    var progEl  = document.getElementById('fdm-sum-progress');
+    var priceEl = document.getElementById('fdm-sum-price');
+    var btn     = document.getElementById('fdm-cta-btn');
+    var ctaTxt  = btn ? btn.querySelector('.cta-txt') : null;
+
+    if (progEl) progEl.textContent = req.length ? (done + '/' + req.length) : 'listo';
+    if (priceEl) {
+      var newPrice = '$' + PRICES[currentOpt][currentVer];
+      if (priceEl.textContent !== newPrice) {
+        priceEl.textContent = newPrice;
+        priceEl.classList.remove('flash');
+        void priceEl.offsetWidth;
+        priceEl.classList.add('flash');
+      }
+    }
+
+    var allDone = (done === req.length);
+    if (btn) btn.disabled = !allDone;
+    if (ctaTxt) {
+      if (allDone)         ctaTxt.textContent = 'Mostrar al mesero ✦';
+      else if (done === 0) ctaTxt.textContent = 'Elige tus opciones ↑';
+      else                 ctaTxt.textContent = 'Te falta ' + (req.length - done) + ' selección' + ((req.length - done) > 1 ? 'es' : '');
+    }
+  }
+
+  function share(){
+    var sel   = selections[currentOpt] || {};
+    var price = PRICES[currentOpt][currentVer];
+    var verTxt = (currentVer === 'especial') ? 'Especial' : 'Sencillo';
+
+    var titleEl = document.getElementById('fdm-share-title');
+    var subEl   = document.getElementById('fdm-share-sub');
+    var listEl  = document.getElementById('fdm-share-list');
+    if (!listEl) return;
+
+    if (titleEl) titleEl.textContent = 'Opción ' + currentOpt + ' · ' + verTxt + ' · $' + price;
+    if (subEl)   subEl.textContent   = NAMES[currentOpt] + ' · ' + verTxt.toLowerCase();
+
+    var rows = [];
+    rows.push({ lbl: 'Entrada del día', val: 'Incluida', gold: true });
+    rows.push({ lbl: 'Bebida', val: 'Incluida' });
+
+    if (currentOpt == 1) {
+      rows.push({ lbl: 'Ensalada', val: 'Rusa' });
+      rows.push({ lbl: 'Proteína', val: sel.proteina || '—' });
+      rows.push({ lbl: 'Acompañante', val: sel.acomp || '—' });
+    } else {
+      rows.push({ lbl: 'Plato fuerte', val: 'Ribeye', gold: true });
+      rows.push({ lbl: 'Ensalada', val: 'César' });
+      rows.push({ lbl: 'Acompañantes', val: 'Arroz blanco · papa chaucha' });
+    }
+
+    if (currentVer === 'especial') {
+      rows.push({ lbl: 'Salsa 🍄', val: sel.salsa || '—', gold: true });
+      rows.push({ lbl: 'Postre 🍫', val: 'Incluido', gold: true });
+    }
+
+    listEl.innerHTML = rows.map(function(r){
+      return '<li><span class="lbl">' + r.lbl + '</span><span class="val' + (r.gold ? ' gold' : '') + '">' + r.val + '</span></li>';
+    }).join('');
+
+    var modal = document.getElementById('fdm-share-modal');
+    if (modal) modal.classList.add('open');
+  }
+
+  function closeShare(){
+    var modal = document.getElementById('fdm-share-modal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  document.addEventListener('click', function(e){
+    var chip = e.target.closest('.fdm-chip');
+    if (chip && chip.parentElement && chip.parentElement.classList.contains('fdm-chips')) {
+      selectChip(chip);
+    }
+    if (e.target && e.target.id === 'fdm-share-modal') closeShare();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var ov = document.getElementById('fdm-overlay');
+    if (!ov || !ov.classList.contains('open')) return;
+    var modal = document.getElementById('fdm-share-modal');
+    if (modal && modal.classList.contains('open')) closeShare();
+    else close();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyMode);
+  } else {
+    applyMode();
+  }
+  setInterval(applyMode, 5 * 60 * 1000);
+
+  window.fdayMenu = {
+    open: open, close: close,
+    switchTab: switchTab, switchVer: switchVer,
     share: share, closeShare: closeShare,
     isActive: isActive
   };
