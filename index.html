@@ -3605,12 +3605,6 @@
       <span class="fday-seal-mes">JUN</span>
     </div>
 
-    <!-- Pill: primero invita a activar el audio; tras el primer toque queda como botón mute/unmute persistente -->
-    <div class="fday-tap-pill" id="fday-tap-pill" role="button" tabindex="0"
-         aria-label="Activar o silenciar el saludo del video">
-      <span class="fday-tap-icon" id="fday-tap-icon">🔊</span>
-      <span class="fday-tap-label" id="fday-tap-label">Toca para escuchar el saludo</span>
-    </div>
   </div>
 
   <div class="home-content">
@@ -7243,7 +7237,6 @@
     apply();
     setInterval(apply, 60 * 1000);
     if (isActive()) {
-      fdayArmInteraction();
       fdayPickVideoSrc();
       // Re-pick si el viewport cambia (rotación de dispositivo, resize)
       var resizeTimer;
