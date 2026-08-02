@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Montaña Dorada · Menú 3D / AR</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<script type="module" src="model-viewer.min.js"></script>
 <style>
   :root{ --black:#080808; --card:#0F0F0F; --gold:#C9A84C; --gold2:#E8C96A; --white:#F0E8D8; --soft:#7A7060; --border:#2A2510; }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -65,8 +65,10 @@
   <div class="stage">
     <model-viewer
       id="mv"
-      src="panceta_opt.glb"
+      src="panceta_mv.glb"
       alt="Panceta crocante en 3D"
+      loading="eager"
+      reveal="auto"
       camera-controls
       auto-rotate
       auto-rotate-delay="800"
